@@ -1,4 +1,0 @@
-/home/students/s498831/Desktop/network/build/CMakeFiles/Client.dir
-/home/students/s498831/Desktop/network/build/CMakeFiles/Server.dir
-/home/students/s498831/Desktop/network/build/CMakeFiles/edit_cache.dir
-/home/students/s498831/Desktop/network/build/CMakeFiles/rebuild_cache.dir
