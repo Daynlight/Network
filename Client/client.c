@@ -6,15 +6,12 @@
 #define BUFFER_SIZE 100
 #define NAMESIZE 25
 
-struct network_client network = {0, 0};
+struct network_client network = {0};
 char send_buffer[BUFFER_SIZE] = {0};
-char read_buffer[BUFFER_SIZE] = {0};
+char read_buffer[BUFFER_SIZE + NAMESIZE] = {0};
 char name[NAMESIZE] = {0};
 int running = 1;
 
-int read_thread_running = 1;
-pthread_t thread_id;
-int thread_num = 1;
 
 
 
@@ -22,29 +19,10 @@ int thread_num = 1;
 void sigint_handler(int sig){
     network_destroy(&network);
     running = 0;
-    read_thread_running = 0;
-    pthread_join(thread_id, NULL);
     exit(EXIT_FAILURE);
 };
 
-void* read_thread(){
-    int valread = 0;
-    while(read_thread_running){
-        valread = network_read(&network, read_buffer, BUFFER_SIZE);
-        if (valread < 0) {
-            printf("\nServer closed the connection.\n");
-            running = 0;
-            read_thread_running = 0;
-        }
-        else if(valread > 0){
-            printf("Server: %s", read_buffer);
-            fflush(stdout);
-            printf("> ");
-            fflush(stdout);
-        };
-    };
-    return NULL;
-}
+
 
 
 
@@ -58,42 +36,52 @@ int main(){
 
     if(network_connect(&network)){
         printf("Can't connect to network!\n");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
     else {
         printf("Connected to server!\n");
     }  
-
-    if (pthread_create(&thread_id, NULL, read_thread, (void*)&thread_num) != 0) {
-        perror("pthread_create");
-        exit(1);
-    }
 
     printf("name: ");
     fgets(name, NAMESIZE, stdin);
     name[strcspn(name, "\n")] = ' ';
     printf("logged as %s\n", name);
 
+    fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
+    
 
 
     printf("> ");
     while (running) {
-        fgets(send_buffer, BUFFER_SIZE, stdin);
-        send_buffer[strcspn(send_buffer, "\n")] = 0;
-        printf("> ");
+        if(fgets(send_buffer, BUFFER_SIZE, stdin) != NULL){
+            send_buffer[strcspn(send_buffer, "\n")] = 0;
+            printf("> ");
 
-        char buffer[NAMESIZE + BUFFER_SIZE] = {0};
-        strcat(buffer, name);
-        strcat(buffer, send_buffer);
+            char buffer[NAMESIZE + BUFFER_SIZE] = {0};
+            strcat(buffer, name);
+            strcat(buffer, send_buffer);
 
-        network_send(&network, buffer, NAMESIZE + BUFFER_SIZE);
-        
-        memset(buffer, 0, BUFFER_SIZE);
+            network_send(&network, buffer, NAMESIZE + BUFFER_SIZE);
+            
+            memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
+            memset(send_buffer, 0, BUFFER_SIZE);
+        }
+        else{
+            int valread = network_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE);
+            if (valread < 0) {
+                printf("\nServer closed the connection.\n");
+                running = 0;
+            }
+            else if(valread > 0){
+                printf("%s\n", read_buffer);
+                printf("> ");
+                memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
+            };
+        };
     };
     
 
 
-    pthread_join(thread_id, NULL);
     network_destroy(&network);
     return 0;
 };

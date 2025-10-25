@@ -7,3 +7,5 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 setsid konsole -e "${SCRIPT_DIR}/../bin/Server" &
 
 setsid konsole -e "${SCRIPT_DIR}/../bin/Client" &
+
+setsid konsole -e "${SCRIPT_DIR}/../bin/Client" &
