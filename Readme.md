@@ -8,11 +8,30 @@ It is simple internet function to work with sending data via network. It is writ
 ## TOC
 - [About](#about)
 - [TOC](#toc)
+- [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Full Example](#full-example)
-- [Feature](#feature)
+- [Features](#features)
+- [TODO (Future Features)](#todo-future-features)
 - [License](#license)
+- [Prerequisites](#prerequisites)
+
+
+
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center">
+      <a href=".github/SS//Chat.png">
+        <img src=".github/SS//Chat.png" /><br>
+      </a>
+    </td>
+  </tr>
+</table>
+
 
 
 
