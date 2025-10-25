@@ -162,4 +162,12 @@ void network_send_server(struct network_server *network_socket, const unsigned i
       send(network_socket->client_sock[i], buffer, max_message_size, 0);
   else
       send(network_socket->client_sock[i], buffer, strlen(buffer), 0);
+}
+
+void network_broadcast(struct network_server *network_socket, const unsigned int i, char *buffer, const unsigned int max_message_size) {
+  for(int j = 0; j < MAX_CLIENTS; j++){
+      if(i != j && network_socket->client_sock[j] > 0){
+          network_send_server(network_socket, j, buffer,  max_message_size);
+      };
+  };  
 };

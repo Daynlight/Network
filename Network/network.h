@@ -38,5 +38,6 @@ int network_listen(struct network_server* network_socket);
 int network_init_server(struct network_server* network_socket, const unsigned int port);
 int network_read_server(struct network_server* network_socket, unsigned int i, char* buffer, const unsigned int buffer_size);
 void network_send_server(struct network_server* network_socket, unsigned int i, char* buffer, const unsigned int max_message_size);
+void network_broadcast(struct network_server *network_socket, const unsigned int i, char *buffer, const unsigned int max_message_size);
 
 #endif

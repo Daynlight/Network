@@ -46,11 +46,7 @@ int main() {
                 int valread = network_read_server(&network, i, buffer,  BUFFER_SIZE + NAMESIZE);
                 if(valread > 0){
                     printf("%s\n", buffer);
-                    for(int j = 0; j < MAX_CLIENTS; j++){
-                        if(i != j && network.client_sock[j] > 0){
-                            network_send_server(&network, j, buffer,  BUFFER_SIZE + NAMESIZE);
-                        };
-                    };          
+                    network_broadcast(&network, i, buffer, BUFFER_SIZE + NAMESIZE);
                 }
                 else if(valread == -2){
                     close(network.client_sock[i]);
