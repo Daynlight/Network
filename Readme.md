@@ -333,10 +333,14 @@ int main(){
 
 
 
+
+
 ## License
+[GNU GENERAL PUBLIC LICENSE Version 2, June 1991](LICENSE)
 
 
 
 
-
-
+## Prerequisites
+- CMake 3.15 or higher
+- Git (for cloning with submodules)
