@@ -68,7 +68,7 @@ int main(){
         }
         else{
             int valread = network_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE);
-            if (valread < 0) {
+            if (valread == -2) {
                 printf("\nServer closed the connection.\n");
                 running = 0;
             }

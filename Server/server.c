@@ -40,7 +40,7 @@ int main() {
             memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
             if(network.client_sock[i] > 0){
                 int valread = network_read_server(&network, i, buffer,  BUFFER_SIZE + NAMESIZE);
-                printf("message read from %d: %s", i, buffer);
+                printf("message read from %d: %s\n", i, buffer);
                 if(valread > 0){
                     for(int j = 0; j < MAX_CLIENTS; j++){
                         if(i != j && network.client_sock[i] > 0){
@@ -49,7 +49,7 @@ int main() {
                         };
                     };          
                 }
-                else if(valread == -1){
+                else if(valread == -2){
                     close(network.client_sock[i]);
                     network.client_sock[i] = 0;
                     printf("Client disconnected\n");

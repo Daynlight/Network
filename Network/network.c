@@ -46,10 +46,12 @@ int network_read(struct network_client *network_socket, char *buffer, const unsi
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return 0;
         } else {
-            printf("Read error: %s\n", strerror(errno));
             return -1;
         }
     }
+
+    if(val == 0)
+      return -2;
 
     return val;
 }
@@ -146,6 +148,9 @@ int network_read_server(struct network_server *network_socket, unsigned int i, c
             return -1;
         }
     }
+
+    if(val == 0)
+      return -2;
 
     return val;
 }
