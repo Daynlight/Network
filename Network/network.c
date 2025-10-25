@@ -6,21 +6,41 @@
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_client* network_socket, const char* ip_addr, int port){
-  if ((network_socket->sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    return ERROR;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netdb.h>
 
-  network_socket->serv_addr.sin_family = AF_INET;
-  network_socket->serv_addr.sin_port = htons(port);
+enum NetworkCodes network_client_init(struct network_client* network_socket, const char* addr, int port) {
+    struct addrinfo hints, *res;
+    int err_code;
 
-  if (inet_pton(AF_INET, ip_addr, &network_socket->serv_addr.sin_addr) <= 0)
-    return ERROR;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
 
-  int flags = fcntl(network_socket->sock, F_GETFL, 0);
-  fcntl(network_socket->sock, F_SETFL, flags | O_NONBLOCK);
+    if ((err_code = getaddrinfo(addr, NULL, &hints, &res)) != 0)
+      return ERROR;
 
-  return SUCCESS;
-};
+    if ((network_socket->sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0) {
+        freeaddrinfo(res);
+        return ERROR;
+    }
+
+    network_socket->serv_addr = *(struct sockaddr_in*)res->ai_addr;
+    network_socket->serv_addr.sin_port = htons(port);
+
+    freeaddrinfo(res);
+
+    int flags = fcntl(network_socket->sock, F_GETFL, 0);
+    fcntl(network_socket->sock, F_SETFL, flags | O_NONBLOCK);
+
+    return SUCCESS;
+}
+
 
 enum NetworkCodes network_client_destroy(struct network_client* network_socket){
   if(network_socket->sock != -1)
