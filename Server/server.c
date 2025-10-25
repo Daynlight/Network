@@ -1,3 +1,5 @@
+#include "server.h"
+
 #include <stdio.h>          // For input/output functions (printf, perror, etc.)
 #include <stdlib.h>         // For exit() and general utilities
 #include <string.h>         // For string handling (memset, strlen, etc.)
@@ -7,7 +9,14 @@
 #define PORT 9090           // Define the port number on which the server will listen
 #define BUFFER_SIZE 50    // Define the size of the buffer for message exchange
 
-int main() {
+int main(){
+    server();
+    return 0;
+}
+
+
+
+int server() {
     int server_fd, new_socket;                  // server_fd = server socket descriptor, new_socket = socket for accepted client
     struct sockaddr_in address;                 // Structure to store address information
     int opt = 1;                                // Option value for setsockopt (enabling SO_REUSEADDR)

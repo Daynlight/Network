@@ -1,3 +1,5 @@
+#include "client.h"
+
 #include <stdio.h>          // For standard input/output functions (printf, fgets, etc.)
 #include <stdlib.h>         // For general utilities (exit, etc.)
 #include <string.h>         // For memory and string functions (memset, strlen, etc.)
@@ -7,6 +9,11 @@
 #define PORT 9090           // The port number that the client will connect to
 #define BUFFER_SIZE 50    // The size of the message buffer for sending/receiving data
 
+
+int main(){
+    client();
+    return 0;
+}
 
 
 
@@ -53,7 +60,7 @@ void connectNetwork(struct network* network_socket){
 
 
 
-int main() {
+int client() {
     struct network server = {0, 0};
     char buffer[BUFFER_SIZE] = {0};             // Buffer for storing data to send or receive
 
