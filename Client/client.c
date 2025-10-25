@@ -43,8 +43,9 @@ int main(){
     }  
 
     printf("name: ");
-    fgets(name, NAMESIZE, stdin);
-    name[strcspn(name, "\n")] = ' ';
+    fgets(name, NAMESIZE -1, stdin);
+    name[strcspn(name, "\n")] = ':';
+    strcat(name, " ");
     printf("logged as %s\n", name);
 
     fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
@@ -55,6 +56,12 @@ int main(){
     while (running) {
         if(fgets(send_buffer, BUFFER_SIZE, stdin) != NULL){
             send_buffer[strcspn(send_buffer, "\n")] = 0;
+
+            if(strcmp(send_buffer, "exit") == 0){
+                running = 0;
+                break;
+            }
+
             printf("> ");
 
             char buffer[NAMESIZE + BUFFER_SIZE] = {0};

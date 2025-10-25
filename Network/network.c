@@ -97,7 +97,7 @@ int network_listen(struct network_server *network_socket) {
 
   int socket = accept(network_socket->server_sock, (struct sockaddr *)&network_socket->serv_addr, (socklen_t*)&addrlen);
   if (socket < 0) {
-    return 0;
+    return -2;
   }
 
   int socket_place = network_find_free_socket(network_socket);
@@ -106,6 +106,10 @@ int network_listen(struct network_server *network_socket) {
   }
     
   network_socket->client_sock[socket_place] = socket;
+
+  int flags = fcntl(network_socket->client_sock[socket_place], F_GETFL, 0);
+  fcntl(network_socket->client_sock[socket_place], F_SETFL, flags | O_NONBLOCK);
+
   return 0;
 }
 
@@ -131,8 +135,6 @@ int network_init_server(struct network_server *network_socket, const unsigned in
 
     int flags = fcntl(network_socket->server_sock, F_GETFL, 0);
     fcntl(network_socket->server_sock, F_SETFL, flags | O_NONBLOCK);
-    for(int i = 0; i < MAX_CLIENTS; i++)
-      fcntl(network_socket->client_sock[i], F_SETFL, flags | O_NONBLOCK);
 
     return 0;
 }

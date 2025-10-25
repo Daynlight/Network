@@ -32,20 +32,23 @@ int main() {
 
     
     while (running) {
-        if(network_listen(&network) == -1){
+        int err = network_listen(&network);
+        if(err == -1){
             printf("Cant connect client!\n");
+        }
+        else if(err == 0){
+            printf("Client connected\n");
         }
 
         for(int i = 0; i < MAX_CLIENTS; i++){
             memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
             if(network.client_sock[i] > 0){
                 int valread = network_read_server(&network, i, buffer,  BUFFER_SIZE + NAMESIZE);
-                printf("message read from %d: %s\n", i, buffer);
                 if(valread > 0){
+                    printf("%s\n", buffer);
                     for(int j = 0; j < MAX_CLIENTS; j++){
-                        if(i != j && network.client_sock[i] > 0){
+                        if(i != j && network.client_sock[j] > 0){
                             network_send_server(&network, j, buffer,  BUFFER_SIZE + NAMESIZE);
-                            printf("%d to %d: %s\n", i, j, buffer);
                         };
                     };          
                 }
