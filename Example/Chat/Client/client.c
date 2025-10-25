@@ -1,7 +1,7 @@
 #include "client.h"
 
 #define PORT 9090
-#define IP "127.0.0.1"
+#define ADDR "localhost"
 
 #define BUFFER_SIZE 100
 #define NAMESIZE 25
@@ -30,7 +30,7 @@ void sigint_handler(int sig){
 int main(){
     signal(SIGINT, sigint_handler);
 
-    if(network_client_init(&network, IP, PORT) == ERROR)
+    if(network_client_init(&network, ADDR, PORT) == ERROR)
         printf("Can't init network\n");
 
     if(network_client_connect(&network) == ERROR){

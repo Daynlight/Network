@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <netdb.h> 
 #include <arpa/inet.h>
 
 
@@ -57,7 +58,7 @@ struct network_client{
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_client* network_socket, const char* ip_addr, int port);
+enum NetworkCodes network_client_init(struct network_client* network_socket, const char* addr, int port);
 enum NetworkCodes network_client_destroy(struct network_client* network_socket);
 enum NetworkCodes network_client_connect(struct network_client* network_socket);
 int network_client_read(struct network_client* network_socket, char* buffer, const unsigned int buffer_size);
