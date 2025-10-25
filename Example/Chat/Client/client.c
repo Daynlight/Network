@@ -1,7 +1,7 @@
 #include "client.h"
 
 #define PORT 9090
-#define ADDR "localhost"
+#define ADDR "62.21.99.94"
 
 #define BUFFER_SIZE 100
 #define NAMESIZE 25

@@ -6,31 +6,15 @@
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_client* network_socket, const char* addr, int port){
-  struct addrinfo hints, *res;
-  int status;
-
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_INET;
-  hints.ai_socktype = SOCK_STREAM;
-  
-
-  if ((status = getaddrinfo(addr, NULL, &hints, &res)) != 0) {
-    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
-    return ERROR;
-  }
-
+enum NetworkCodes network_client_init(struct network_client* network_socket, const char* ip_addr, int port){
   if ((network_socket->sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     return ERROR;
 
   network_socket->serv_addr.sin_family = AF_INET;
   network_socket->serv_addr.sin_port = htons(port);
 
-  if ((network_socket->sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
-      return ERROR;
-
-  network_socket->serv_addr = *((struct sockaddr_in *)res->ai_addr);
-  network_socket->serv_addr.sin_port = htons(port);
+  if (inet_pton(AF_INET, ip_addr, &network_socket->serv_addr.sin_addr) <= 0)
+    return ERROR;
 
   int flags = fcntl(network_socket->sock, F_GETFL, 0);
   fcntl(network_socket->sock, F_SETFL, flags | O_NONBLOCK);
