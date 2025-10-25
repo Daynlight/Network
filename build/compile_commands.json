@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/students/s498831/Desktop/network/build",
+  "command": "/usr/bin/gcc   -g -o CMakeFiles/Client.dir/client.c.o -c /home/students/s498831/Desktop/network/client.c",
+  "file": "/home/students/s498831/Desktop/network/client.c",
+  "output": "CMakeFiles/Client.dir/client.c.o"
+},
+{
+  "directory": "/home/students/s498831/Desktop/network/build",
+  "command": "/usr/bin/gcc   -g -o CMakeFiles/Server.dir/server.c.o -c /home/students/s498831/Desktop/network/server.c",
+  "file": "/home/students/s498831/Desktop/network/server.c",
+  "output": "CMakeFiles/Server.dir/server.c.o"
+}
+]
