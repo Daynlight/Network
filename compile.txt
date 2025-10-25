@@ -1,9 +1,0 @@
-gcc -pthread -o output_filename input_filename.c
-
- sudo lsof -i :port     - get process ID
- sudo kill -9 ID        - kill a process
-
- -----
-ss -tuln      - list of all in-use ports
- 
-
