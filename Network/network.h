@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
 #include <arpa/inet.h>
 
 #define MAX_CONNECT_RETRYS  200
@@ -25,6 +27,8 @@ void network_destroy(struct network_client* network_socket);
 
 int network_connect(struct network_client* network_socket);
 int network_init(struct network_client* network_socket, const char* ip_addr, int port);
+int network_read(struct network_client* network_socket, char* buffer, const unsigned int buffer_size);
+
 
 
 #endif

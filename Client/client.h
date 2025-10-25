@@ -3,5 +3,6 @@
 
 #include "network.h"
 #include <signal.h>
+#include <pthread.h>
 
 #endif

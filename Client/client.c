@@ -5,19 +5,48 @@
 
 
 struct network_client network = {0, 0};
+char send_buffer[BUFFER_SIZE] = {0};
+char read_buffer[BUFFER_SIZE] = {0};
+int running = 1;
+
+int read_thread_running = 1;
+pthread_t thread_id;
+int thread_num = 1;
+
 
 
 void sigint_handler(int sig){
     network_destroy(&network);
+    running = 0;
+    read_thread_running = 0;
+    pthread_join(thread_id, NULL);
     exit(EXIT_FAILURE);
 };
+
+
+void* read_thread(){
+    int valread = 0;
+    while(read_thread_running){
+        valread = network_read(&network, read_buffer, BUFFER_SIZE);
+        if (valread < 0) {
+            printf("\nServer closed the connection.\n");
+            running = 0;
+            read_thread_running = 0;
+        }
+        else if(valread > 0){
+            printf("Server: %s", read_buffer);
+            fflush(stdout);
+            printf("> ");
+            fflush(stdout);
+        };
+    };
+    return NULL;
+}
 
 
 int main(){
     signal(SIGINT, sigint_handler);
     
-
-    char buffer[BUFFER_SIZE] = {0};
 
     if(network_init(&network, "127.0.0.1", PORT))
         printf("Can't init network");
@@ -29,26 +58,27 @@ int main(){
     else 
         printf("Connected to server!\n");
 
-
-        
-    while (1) {
-        printf("Client: ");                     // Prompt user for input
-        fgets(buffer, BUFFER_SIZE, stdin);      // Read message from keyboard into buffer
-        if(strlen(buffer) > BUFFER_SIZE) 
-            send(network.sock, buffer, BUFFER_SIZE, 0);  // Send user message to the server
-        else
-            send(network.sock, buffer, strlen(buffer), 0);
-
-        memset(buffer, 0, BUFFER_SIZE);         // Clear buffer before reading the server’s reply
-        int valread = read(network.sock, buffer, BUFFER_SIZE); // Read message from server
-        if (valread <= 0) {                     // If no data received or server closed connection
-            printf("Server closed the connection.\n");
-            break;                              // Exit communication loop
-        }
-
-        printf("Server: %s\n", buffer);         // Display message received from server
+    if (pthread_create(&thread_id, NULL, read_thread, (void*)&thread_num) != 0) {
+        perror("pthread_create");
+        exit(1);
     }
 
+
+    printf("> ");
+    while (running) {
+        fgets(send_buffer, BUFFER_SIZE, stdin);
+        printf("> ");
+
+        if(strlen(send_buffer) > BUFFER_SIZE)
+            send(network.sock, send_buffer, BUFFER_SIZE, 0);
+        else
+            send(network.sock, send_buffer, strlen(send_buffer), 0);
+
+        memset(send_buffer, 0, BUFFER_SIZE);
+    };
+    
+    pthread_join(thread_id, NULL);
     network_destroy(&network);
     return 0;
 };
+
