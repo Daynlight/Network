@@ -1,12 +1,14 @@
 #include "client.h"
 
 #define PORT 9090
-#define BUFFER_SIZE 50
+#define BUFFER_SIZE 100
+#define NAMESIZE 25
 
 
 struct network_client network = {0, 0};
 char send_buffer[BUFFER_SIZE] = {0};
 char read_buffer[BUFFER_SIZE] = {0};
+char name[NAMESIZE] = {0};
 int running = 1;
 
 int read_thread_running = 1;
@@ -63,18 +65,26 @@ int main(){
         exit(1);
     }
 
+    printf("name: ");
+    fgets(name, NAMESIZE, stdin);
+    name[strcspn(name, "\n")] = ' ';
+
 
     printf("> ");
     while (running) {
         fgets(send_buffer, BUFFER_SIZE, stdin);
         printf("> ");
 
-        if(strlen(send_buffer) > BUFFER_SIZE)
-            send(network.sock, send_buffer, BUFFER_SIZE, 0);
-        else
-            send(network.sock, send_buffer, strlen(send_buffer), 0);
+        char buffer[NAMESIZE + BUFFER_SIZE] = {0};
+        strcat(buffer, name);
+        strcat(buffer, send_buffer);
 
-        memset(send_buffer, 0, BUFFER_SIZE);
+        if(strlen(send_buffer) > BUFFER_SIZE)
+            send(network.sock, buffer, BUFFER_SIZE + NAMESIZE, 0);
+        else
+            send(network.sock, buffer, strlen(buffer), 0);
+
+        memset(buffer, 0, BUFFER_SIZE);
     };
     
     pthread_join(thread_id, NULL);

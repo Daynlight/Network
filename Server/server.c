@@ -8,7 +8,7 @@
 #include <signal.h>
 
 #define PORT 9090           // Define the port number on which the server will listen
-#define BUFFER_SIZE 50    // Define the size of the buffer for message exchange
+#define BUFFER_SIZE 125    // Define the size of the buffer for message exchange
 int server_fd, new_socket;                  // server_fd = server socket descriptor, new_socket = socket for accepted client
 
 void sigint_handler(int sig){
