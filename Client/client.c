@@ -1,5 +1,6 @@
 #include "client.h"
 
+#include <unistd.h>
 #include <stdio.h>          // For standard input/output functions (printf, fgets, etc.)
 #include <stdlib.h>         // For general utilities (exit, etc.)
 #include <string.h>         // For memory and string functions (memset, strlen, etc.)
@@ -48,10 +49,16 @@ void destroyNetwork(struct network* network_socket){
 
 void connectNetwork(struct network* network_socket){
     // Connect the socket to the specified server address
-    if (connect(network_socket->sock, (struct sockaddr *)&network_socket->serv_addr, sizeof(network_socket->serv_addr)) < 0) {
-        printf("\nConnection Failed \n");       // Error message if connection attempt fails
-        exit(-1);                              // Return -1 to indicate failure
+    while (1)
+    {
+        if (connect(network_socket->sock, (struct sockaddr *)&network_socket->serv_addr, sizeof(network_socket->serv_addr)) < 0) {
+            sleep(10);
+        }
+        else{
+            break;
+        }
     }
+    
 }
 
 

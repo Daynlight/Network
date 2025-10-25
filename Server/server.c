@@ -5,11 +5,26 @@
 #include <string.h>         // For string handling (memset, strlen, etc.)
 #include <unistd.h>         // For close(), read(), write(), etc.
 #include <arpa/inet.h>      // For internet address structures and functions (socket, bind, etc.)
+#include <signal.h>
 
 #define PORT 9090           // Define the port number on which the server will listen
 #define BUFFER_SIZE 50    // Define the size of the buffer for message exchange
+int server_fd, new_socket;                  // server_fd = server socket descriptor, new_socket = socket for accepted client
+
+void sigint_handler(int sig){
+    if (new_socket != -1) {
+        close(new_socket);
+    }
+    
+    if (server_fd != -1) {
+        close(server_fd);
+    }
+    exit(EXIT_FAILURE);
+};
 
 int main(){
+    signal(SIGINT, sigint_handler);
+
     server();
     return 0;
 }
@@ -17,7 +32,7 @@ int main(){
 
 
 int server() {
-    int server_fd, new_socket;                  // server_fd = server socket descriptor, new_socket = socket for accepted client
+    
     struct sockaddr_in address;                 // Structure to store address information
     int opt = 1;                                // Option value for setsockopt (enabling SO_REUSEADDR)
     int addrlen = sizeof(address);              // Length of the address structure
