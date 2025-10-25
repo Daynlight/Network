@@ -32,6 +32,7 @@ int main() {
 
     
     while (running) {
+        // connect 
         int err = network_listen(&network);
         if(err == -1){
             printf("Cant connect client!\n");
@@ -40,6 +41,7 @@ int main() {
             printf("Client connected\n");
         }
 
+        // broadcast
         for(int i = 0; i < MAX_CLIENTS; i++){
             memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
             if(network.client_sock[i] > 0){
