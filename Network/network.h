@@ -28,7 +28,7 @@ void network_destroy(struct network_client* network_socket);
 int network_connect(struct network_client* network_socket);
 int network_init(struct network_client* network_socket, const char* ip_addr, int port);
 int network_read(struct network_client* network_socket, char* buffer, const unsigned int buffer_size);
-
+void network_send(struct network_client* network_socket, char* buffer, const unsigned int max_message_size);
 
 
 #endif

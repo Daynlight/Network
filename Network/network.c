@@ -53,3 +53,10 @@ int network_read(struct network_client *network_socket, char *buffer, const unsi
 
     return val;
 }
+
+void network_send(struct network_client *network_socket, char *buffer, const unsigned int max_message_size){
+  if(strlen(buffer) > max_message_size)
+      send(network_socket->sock, buffer, max_message_size, 0);
+  else
+      send(network_socket->sock, buffer, strlen(buffer), 0);
+}

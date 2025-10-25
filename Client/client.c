@@ -1,9 +1,10 @@
 #include "client.h"
 
 #define PORT 9090
+#define IP "127.0.0.1"
+
 #define BUFFER_SIZE 100
 #define NAMESIZE 25
-
 
 struct network_client network = {0, 0};
 char send_buffer[BUFFER_SIZE] = {0};
@@ -17,6 +18,7 @@ int thread_num = 1;
 
 
 
+
 void sigint_handler(int sig){
     network_destroy(&network);
     running = 0;
@@ -24,7 +26,6 @@ void sigint_handler(int sig){
     pthread_join(thread_id, NULL);
     exit(EXIT_FAILURE);
 };
-
 
 void* read_thread(){
     int valread = 0;
@@ -46,19 +47,22 @@ void* read_thread(){
 }
 
 
+
+
 int main(){
     signal(SIGINT, sigint_handler);
-    
 
-    if(network_init(&network, "127.0.0.1", PORT))
-        printf("Can't init network");
+    if(network_init(&network, IP, PORT)){
+        printf("Can't init network\n");
+    }
 
     if(network_connect(&network)){
         printf("Can't connect to network!\n");
         exit(-1);
     }
-    else 
+    else {
         printf("Connected to server!\n");
+    }  
 
     if (pthread_create(&thread_id, NULL, read_thread, (void*)&thread_num) != 0) {
         perror("pthread_create");
@@ -68,25 +72,27 @@ int main(){
     printf("name: ");
     fgets(name, NAMESIZE, stdin);
     name[strcspn(name, "\n")] = ' ';
+    printf("logged as %s\n", name);
+
 
 
     printf("> ");
     while (running) {
         fgets(send_buffer, BUFFER_SIZE, stdin);
+        send_buffer[strcspn(send_buffer, "\n")] = 0;
         printf("> ");
 
         char buffer[NAMESIZE + BUFFER_SIZE] = {0};
         strcat(buffer, name);
         strcat(buffer, send_buffer);
 
-        if(strlen(send_buffer) > BUFFER_SIZE)
-            send(network.sock, buffer, BUFFER_SIZE + NAMESIZE, 0);
-        else
-            send(network.sock, buffer, strlen(buffer), 0);
-
+        network_send(&network, buffer, NAMESIZE + BUFFER_SIZE);
+        
         memset(buffer, 0, BUFFER_SIZE);
     };
     
+
+
     pthread_join(thread_id, NULL);
     network_destroy(&network);
     return 0;
