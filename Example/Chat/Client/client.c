@@ -17,7 +17,7 @@ int running = 1;
 
 
 void sigint_handler(int sig){
-    network_destroy(&network);
+    network_client_destroy(&network);
     running = 0;
     exit(EXIT_FAILURE);
 };
@@ -30,17 +30,15 @@ void sigint_handler(int sig){
 int main(){
     signal(SIGINT, sigint_handler);
 
-    if(network_init(&network, IP, PORT)){
+    if(network_client_init(&network, IP, PORT) == ERROR)
         printf("Can't init network\n");
-    }
 
-    if(network_connect(&network)){
+    if(network_client_connect(&network) == ERROR){
         printf("Can't connect to network!\n");
         exit(EXIT_FAILURE);
     }
-    else {
+    else
         printf("Connected to server!\n");
-    }  
 
     printf("name: ");
     fgets(name, NAMESIZE -1, stdin);
@@ -52,6 +50,7 @@ int main(){
     
 
 
+
     printf("> ");
     while (running) {
         if(fgets(send_buffer, BUFFER_SIZE, stdin) != NULL){
@@ -60,7 +59,7 @@ int main(){
             if(strcmp(send_buffer, "exit") == 0){
                 running = 0;
                 break;
-            }
+            };
 
             printf("> ");
 
@@ -68,14 +67,14 @@ int main(){
             strcat(buffer, name);
             strcat(buffer, send_buffer);
 
-            network_send(&network, buffer, NAMESIZE + BUFFER_SIZE);
+            network_client_send(&network, buffer, NAMESIZE + BUFFER_SIZE);
             
             memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
             memset(send_buffer, 0, BUFFER_SIZE);
         }
         else{
-            int valread = network_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE);
-            if (valread == -2) {
+            int valread = network_client_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE);
+            if (valread == DISCONNECT) {
                 printf("\nServer closed the connection.\n");
                 running = 0;
             }
@@ -89,7 +88,7 @@ int main(){
     
 
 
-    network_destroy(&network);
+    network_client_destroy(&network);
     return 0;
 };
 

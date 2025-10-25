@@ -12,7 +12,7 @@ int running = 1;
 
 
 void sigint_handler(int sig) {
-    network_destroy_server(&network);
+    network_server_destroy(&network);
     running = 0;
     exit(EXIT_FAILURE);
 };
@@ -26,31 +26,28 @@ int main() {
 
     printf("Server is running\n");
 
-    if(network_init_server(&network, PORT) == -1){
+    if(network_server_init(&network, PORT) == ERROR)
         exit(EXIT_FAILURE);
-    }
 
     
     while (running) {
         // connect 
-        int err = network_listen(&network);
-        if(err == -1){
+        enum NetworkCodes err = network_server_listen(&network);
+        if(err == ERROR)
             printf("Cant connect client!\n");
-        }
-        else if(err == 0){
+        else if(err == SUCCESS)
             printf("Client connected\n");
-        }
 
         // broadcast
         for(int i = 0; i < MAX_CLIENTS; i++){
             memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
             if(network.client_sock[i] > 0){
-                int valread = network_read_server(&network, i, buffer,  BUFFER_SIZE + NAMESIZE);
+                int valread = network_server_read(&network, i, buffer,  BUFFER_SIZE + NAMESIZE);
                 if(valread > 0){
                     printf("%s\n", buffer);
-                    network_broadcast(&network, i, buffer, BUFFER_SIZE + NAMESIZE);
+                    network_server_broadcast(&network, i, buffer, BUFFER_SIZE + NAMESIZE);
                 }
-                else if(valread == -2){
+                else if(valread == DISCONNECT){
                     close(network.client_sock[i]);
                     network.client_sock[i] = 0;
                     printf("Client disconnected\n");
@@ -59,7 +56,7 @@ int main() {
         };
     };
 
-    network_destroy_server(&network);
+    network_server_destroy(&network);
 
     return 0;
 }
