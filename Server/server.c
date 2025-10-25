@@ -48,6 +48,11 @@ int main() {
                             printf("%d to %d: %s\n", i, j, buffer);
                         };
                     };          
+                }
+                else if(valread == -1){
+                    close(network.client_sock[i]);
+                    network.client_sock[i] = 0;
+                    printf("Client disconnected\n");
                 };
             };
         };
