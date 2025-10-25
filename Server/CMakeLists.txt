@@ -4,3 +4,4 @@ project(Server LANGUAGES C)
 
 
 add_executable(Server server.c)
+target_link_libraries(Server Network)

@@ -1,8 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-int client();
-
-
+#include "network.h"
+#include <signal.h>
 
 #endif
