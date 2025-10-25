@@ -1,9 +1,0 @@
-[Unit]
-Description=Chat
-After=network.target
-
-[Service]
-ExecStart=/path/to/your/bin/Server
-
-[Install]
-WantedBy=multi-user.target
