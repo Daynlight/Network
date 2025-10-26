@@ -345,10 +345,6 @@ int main(){
 - **Supports Broadcast**: The server can broadcast messages to all connected clients.
 - **Extensible**: Future additions like two-way encryption (planned) or message queuing are easy to implement.
 
-## TODO (Future Features)
-- **Two-way** encryption (in progress)
-- **Optimized** client/server performance for larger networks
-- **Cross-Platform**: Should work on most platforms that support C, including Linux and Windows.
 
 
 
