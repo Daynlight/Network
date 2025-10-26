@@ -54,6 +54,7 @@ int main() {
                 };
             };
         };
+        sleep(0.05);
     };
 
     network_server_destroy(&network);

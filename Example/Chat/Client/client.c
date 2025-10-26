@@ -84,6 +84,7 @@ int main(){
                 memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
             };
         };
+        sleep(0.05);
     };
     
 
