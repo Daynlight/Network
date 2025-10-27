@@ -97,8 +97,6 @@ enum NetworkCodes network_client_connect(struct network_client* network_socket) 
 #endif
 }
 
-
-
 int network_client_read(struct network_client *network_socket, char *buffer, const unsigned int buffer_size) {
   int val;
 
