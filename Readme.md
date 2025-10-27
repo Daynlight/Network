@@ -343,7 +343,7 @@ int main(){
 - **Non-blocking I/O**: No need to wait for data to be read or sent; the program can continue executing while awaiting network events.
 - **Multiple Client Handling**: The server can handle multiple client connections simultaneously.
 - **Supports Broadcast**: The server can broadcast messages to all connected clients.
-- **Extensible**: Future additions like two-way encryption (planned) or message queuing are easy to implement.
+- **Cross-Platform**: Window and Linux supported.
 
 
 
