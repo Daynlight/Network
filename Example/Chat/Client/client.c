@@ -92,8 +92,13 @@ int main(){
                 printf("\n> ");
                 memset(send_buffer, 0, BUFFER_SIZE);
             } else if (ch == 8) { // backspace
-                if (strlen(send_buffer) > 0)
-                    send_buffer[strlen(send_buffer) - 1] = '\0';
+                size_t len = strlen(send_buffer);
+                if (len > 0) {
+                    send_buffer[len - 1] = '\0'; // remove last character
+                    // Move cursor back and erase character on console
+                    printf("\b \b");
+                    fflush(stdout);
+                }
             } else {
                 size_t len = strlen(send_buffer);
                 if (len < BUFFER_SIZE - 1)
