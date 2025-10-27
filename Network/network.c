@@ -32,10 +32,7 @@ enum NetworkCodes network_client_init(struct network_client* network_socket, con
 
   freeaddrinfo(res);
 
-#ifdef WIN32
-  u_long mode = 1;
-  ioctlsocket(network_socket->sock, FIONBIO, &mode);
-#else
+#ifndef WIN32
   int flags = fcntl(network_socket->sock, F_GETFL, 0);
   fcntl(network_socket->sock, F_SETFL, flags | O_NONBLOCK);
 #endif
@@ -83,7 +80,9 @@ enum NetworkCodes network_client_connect(struct network_client* network_socket) 
             return ERRORCODE; // timeout or select error
         }
     } else {
-        return SUCCESS; // immediate success
+      u_long mode = 1;
+      ioctlsocket(network_socket->sock, FIONBIO, &mode);
+      return SUCCESS; // immediate success
     }
 #else
     unsigned int retry = 0;
