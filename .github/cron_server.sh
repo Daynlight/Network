@@ -44,7 +44,7 @@ if [ "$REMOTE_COMMIT" != "$LAST_COMMIT" ]; then
   cd ..
 
   echo "[INFO] Restarting systemd service: $SERVICE_NAME"
-  sudo systemctl restart "$SERVICE_NAME"
+  systemctl restart "$SERVICE_NAME"
 
   # Update stored commit hash
   echo "$REMOTE_COMMIT" > "$LAST_COMMIT_FILE"
