@@ -12,6 +12,7 @@ cd "${SCRIPT_DIR}/.."
 # Name of your systemd service
 SERVICE_NAME="chat.service"
 
+
 # File to store the last known commit hash
 LAST_COMMIT_FILE=".last_commit"
 
