@@ -11,9 +11,13 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <netdb.h> 
-#include <arpa/inet.h>
-
+#ifdef WIN32
+  #include <winsock2.h>
+  #include <ws2tcpip.h>
+#else
+  #include <netdb.h> 
+  #include <arpa/inet.h>
+#endif
 
 
 
@@ -34,7 +38,7 @@ enum NetworkCodes{
   NOFREESOCKET = -4,
   NODATA = -3,
   DISCONNECT = -2,
-  ERROR = -1,
+  ERRORCODE = -1,
   NOCLIENT = -3,
   SUCCESS = 0
 };

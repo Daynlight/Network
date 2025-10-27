@@ -26,14 +26,14 @@ int main() {
 
     printf("Server is running\n");
 
-    if(network_server_init(&network, PORT) == ERROR)
+    if(network_server_init(&network, PORT) == ERRORCODE)
         exit(EXIT_FAILURE);
 
     
     while (running) {
         // connect 
         enum NetworkCodes err = network_server_listen(&network);
-        if(err == ERROR)
+        if(err == ERRORCODE)
             printf("Cant connect client!\n");
         else if(err == SUCCESS)
             printf("Client connected\n");
