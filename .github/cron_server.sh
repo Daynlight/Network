@@ -8,6 +8,7 @@ set -o pipefail
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 cd "${SCRIPT_DIR}/.."
 
+
 # Name of your systemd service
 SERVICE_NAME="chat.service"
 
