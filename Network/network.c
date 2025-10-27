@@ -248,31 +248,32 @@ int network_server_find_free_socket(struct network_server *network_socket) {
 };
 
 int network_server_read(struct network_server *network_socket, unsigned int i, char *buffer, const unsigned int buffer_size){
-#ifdef WIN32
-  int val = recv(network_socket->client_sock[i], buffer, buffer_size, 0);
-#else
-  int val = read(network_socket->client_sock[i], buffer, buffer_size);
-#endif
+  int val;
 
 #ifdef WIN32
-    int err = WSAGetLastError();
-    if (err == WSAEWOULDBLOCK)
-        return NODATA;
-    else
-        return ERRORCODE;
+    val = recv(network_socket->client_sock[i], buffer, buffer_size, 0);
+    if(val == SOCKET_ERROR){
+        int err = WSAGetLastError();
+        if(err == WSAEWOULDBLOCK)
+            return NODATA;
+        else
+            return ERRORCODE;
+    }
 #else
-    if (errno == EAGAIN || errno == EWOULDBLOCK)
-        return NODATA;
-    else
-        return ERRORCODE;
+    val = read(network_socket->client_sock[i], buffer, buffer_size);
+    if(val < 0){
+        if(errno == EAGAIN || errno == EWOULDBLOCK)
+            return NODATA;
+        else
+            return ERRORCODE;
+    }
 #endif
 
+    if(val == 0)
+        return DISCONNECT;
 
-  if(val == 0)
-    return DISCONNECT;
-
-  return val;
-};
+    return val; // actual bytes read
+}
 
 enum NetworkCodes network_server_send(struct network_server *network_socket, const unsigned int i, char *buffer, const unsigned int max_message_size) {
   if(strlen(buffer) > max_message_size)
