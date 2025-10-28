@@ -99,8 +99,7 @@ int main(){
             } else if (ch == 8) { // backspace
                 size_t len = strlen(send_buffer);
                 if (len > 0) {
-                    send_buffer[len - 1] = '\0'; // remove last character
-                    // Move cursor back and erase character on console
+                    send_buffer[len - 1] = '\0';
                     printf("\b \b");
                     fflush(stdout);
                 }
