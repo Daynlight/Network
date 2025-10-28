@@ -61,7 +61,7 @@ int main() {
 #ifdef _WIN32
     Sleep(50);
 #else
-    sleep(0.5);
+    sleep(0.05);
 #endif
   };
 
