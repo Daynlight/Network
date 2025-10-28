@@ -126,6 +126,9 @@ int network_client_read(struct network_client *network_socket, char *buffer, con
 };
 
 enum NetworkCodes network_client_send(struct network_client *network_socket, char *buffer, const unsigned int max_message_size){
+  if(buffer == NULL || strlen(buffer) == 0)
+    return NO_DATA;
+
   if(strlen(buffer) > max_message_size)
     send(network_socket->sock, buffer, max_message_size, 0);
   else

@@ -89,7 +89,11 @@ int main(){
                 strcat(buffer, name);
                 strcat(buffer, send_buffer);
 
-                network_client_send(&network, buffer, strlen(buffer));
+                if(send_buffer == NULL || strlen(send_buffer) == 0 || send_buffer[0] == '\0')
+                    printf("Can't send empty message\n");
+                else
+                    network_client_send(&network, buffer, strlen(buffer));
+
                 printf("\n> ");
                 memset(send_buffer, 0, BUFFER_SIZE);
             } else if (ch == 8) { // backspace
@@ -119,7 +123,12 @@ int main(){
             strcat(buffer, name);
             strcat(buffer, send_buffer);
 
-            network_client_send(&network, buffer, strlen(buffer));
+
+            if(send_buffer == NULL || strlen(send_buffer) == 0 || send_buffer[0] == '\0')
+                printf("Can't send empty message\n");
+            else
+                network_client_send(&network, buffer, strlen(buffer));
+            
             printf("> ");
             memset(send_buffer, 0, BUFFER_SIZE);
         }
