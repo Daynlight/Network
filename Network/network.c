@@ -2,7 +2,6 @@
 
 
 
-
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
@@ -38,7 +37,9 @@ enum NetworkCodes network_client_init(struct network_provider* network_provider,
 #endif
 
   return SUCCESS;
-}
+};
+
+
 
 
 enum NetworkCodes network_client_destroy(struct network_provider* network_provider){
@@ -55,6 +56,9 @@ enum NetworkCodes network_client_destroy(struct network_provider* network_provid
 
   return SUCCESS;
 };
+
+
+
 
 enum NetworkCodes network_client_connect(struct network_provider* network_provider) {
 #ifdef WIN32
@@ -97,6 +101,9 @@ enum NetworkCodes network_client_connect(struct network_provider* network_provid
 #endif
 };
 
+
+
+
 int network_client_read(struct network_provider *network_provider, char *buffer, const unsigned int buffer_size) {
 #ifdef WIN32
   int val = recv(network_provider->sock, buffer, buffer_size, 0);
@@ -123,6 +130,10 @@ int network_client_read(struct network_provider *network_provider, char *buffer,
   return val;
 };
 
+
+
+
+
 enum NetworkCodes network_client_send(struct network_provider *network_provider, char *buffer, const unsigned int max_message_size){
   if(buffer == NULL || strlen(buffer) == 0)
     return NODATA;
@@ -134,6 +145,10 @@ enum NetworkCodes network_client_send(struct network_provider *network_provider,
     
   return SUCCESS;
 };
+
+
+
+
 
 
 
@@ -180,6 +195,11 @@ enum NetworkCodes network_server_init(struct network_provider *network_provider,
   return SUCCESS;
 };
 
+
+
+
+
+
 enum NetworkCodes network_server_destroy(struct network_provider *network_provider) {
   if(network_provider->sock != -1)
 #ifdef WIN32
@@ -216,6 +236,10 @@ int network_server_listen(struct network_provider *network_provider) {
   return socket;
 };
 
+
+
+
+
 int network_server_read(int* socket, char *buffer, const unsigned int buffer_size){
 #ifdef WIN32
   int val = recv(socket, buffer, buffer_size, 0);
@@ -240,7 +264,10 @@ int network_server_read(int* socket, char *buffer, const unsigned int buffer_siz
     return DISCONNECT;
 
   return val;
-}
+};
+
+
+
 
 enum NetworkCodes network_server_send(int* socket, char *buffer, const unsigned int max_message_size) {
   if(strlen(buffer) == 0)
@@ -254,13 +281,19 @@ enum NetworkCodes network_server_send(int* socket, char *buffer, const unsigned 
   return SUCCESS;
 };
 
+
+
+
 enum NetworkCodes network_server_broadcast(struct network_provider *network_provider, int* clients_sockets, unsigned int max_clients, const unsigned int i, char *buffer, const unsigned int max_message_size) {
   for(int j = 0; j < max_clients; j++)
     if(i != j && clients_sockets[j] > 0)
       network_server_send(&(clients_sockets[j]), buffer,  max_message_size);
 
   return SUCCESS; 
-}
+};
+
+
+
 
 enum NetworkCodes network_get_client_ip(int* socket, char *buffer){
   struct sockaddr_in client_addr;
@@ -278,3 +311,6 @@ enum NetworkCodes network_get_client_ip(int* socket, char *buffer){
   
   return SUCCESS;
 };
+
+
+
