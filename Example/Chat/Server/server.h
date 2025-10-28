@@ -4,4 +4,8 @@
 #include "network.h"
 #include <signal.h>
 
+#ifdef WIN32
+  #include <windows.h>
+#endif
+
 #endif

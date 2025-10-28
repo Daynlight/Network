@@ -148,7 +148,7 @@ int main(){
 #ifdef _WIN32
     Sleep(50);
 #else
-    usleep(50000);
+    sleep(0.5);
 #endif
   };
 
