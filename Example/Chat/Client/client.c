@@ -7,7 +7,7 @@
 #define BUFFER_SIZE 100
 #define NAMESIZE 25
 
-struct network_client network = {0};
+struct network_provider network = {0};
 char send_buffer[BUFFER_SIZE] = {0};
 char read_buffer[BUFFER_SIZE + NAMESIZE] = {0};
 char name[NAMESIZE] = {0};

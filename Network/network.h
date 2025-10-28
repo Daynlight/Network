@@ -46,11 +46,7 @@ enum NetworkCodes{
 
 
 
-struct network_server{
-  int server_sock;
-  struct sockaddr_in serv_addr;
-};
-struct network_client{
+struct network_provider{
   int sock;
   struct sockaddr_in serv_addr;
 };
@@ -61,11 +57,11 @@ struct network_client{
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_client* network_socket, const char* addr, int port);
-enum NetworkCodes network_client_destroy(struct network_client* network_socket);
-enum NetworkCodes network_client_connect(struct network_client* network_socket);
-int network_client_read(struct network_client* network_socket, char* buffer, const unsigned int buffer_size);
-enum NetworkCodes network_client_send(struct network_client* network_socket, char* buffer, const unsigned int max_message_size);
+enum NetworkCodes network_client_init(struct network_provider* network_provider, const char* addr, int port);
+enum NetworkCodes network_client_destroy(struct network_provider* network_provider);
+enum NetworkCodes network_client_connect(struct network_provider* network_provider);
+int network_client_read(struct network_provider* network_provider, char* buffer, const unsigned int buffer_size);
+enum NetworkCodes network_client_send(struct network_provider* network_provider, char* buffer, const unsigned int max_message_size);
 
 
 
@@ -73,12 +69,12 @@ enum NetworkCodes network_client_send(struct network_client* network_socket, cha
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Server /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_server_init(struct network_server* network_socket, const unsigned int port);
-enum NetworkCodes network_server_destroy(struct network_server* network_socket);
-int network_server_listen(struct network_server* network_socket);
+enum NetworkCodes network_server_init(struct network_provider* network_provider, const unsigned int port);
+enum NetworkCodes network_server_destroy(struct network_provider* network_provider);
+int network_server_listen(struct network_provider* network_provider);
 int network_server_read(int* socket, char *buffer, const unsigned int buffer_size);
 enum NetworkCodes network_server_send(int* socket, char *buffer, const unsigned int max_message_size);
-enum NetworkCodes network_server_broadcast(struct network_server *network_socket, int* clients_sockets, 
+enum NetworkCodes network_server_broadcast(struct network_provider *network_provider, int* clients_sockets, 
                   unsigned int max_clients, const unsigned int i, char *buffer, const unsigned int max_message_size);
 enum NetworkCodes network_get_client_ip(int* socket, char *buffer);
 

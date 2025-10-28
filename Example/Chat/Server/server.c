@@ -4,7 +4,7 @@
 #define BUFFER_SIZE 100
 #define NAMESIZE 25
 
-struct network_server network = {0};
+struct network_provider network = {0};
 struct clients clients = {0};
 
 char buffer[BUFFER_SIZE + NAMESIZE] = {0};
@@ -22,7 +22,7 @@ void resize_clients(struct clients *clients) {
   free(clients->client_sock);
   clients->client_sock = temp;
   clients->max_clients = new_max_clients;
-  printf("clients new max: %d", clients->max_clients);
+  printf("clients new max: %d\n", clients->max_clients);
 };
 
 void add_client(struct clients *clients, int socket){
@@ -32,6 +32,13 @@ void add_client(struct clients *clients, int socket){
   clients->last_client++;
 }
 
+void delete_client(struct clients *clients, int index){
+  for(int i = index; i < clients->max_clients - 1; i++)
+    if(clients->client_sock[i + 1] != 0)
+      clients->client_sock[i] = clients->client_sock[i + 1];
+    else
+      break; 
+}
 
 
 
@@ -83,7 +90,7 @@ int main() {
         }
         else if(valread == DISCONNECT){
           close(clients.client_sock[i]);
-          clients.client_sock[i] = 0;
+          delete_client(&clients, i);
           printf("Client disconnected\n");
         };
       };
