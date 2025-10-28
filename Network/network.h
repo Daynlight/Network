@@ -48,8 +48,6 @@ enum NetworkCodes{
 
 struct network_server{
   int server_sock;
-  int* client_sock;
-  unsigned int max_clients;
   struct sockaddr_in serv_addr;
 };
 struct network_client{
@@ -78,13 +76,10 @@ enum NetworkCodes network_client_send(struct network_client* network_socket, cha
 enum NetworkCodes network_server_init(struct network_server* network_socket, const unsigned int port);
 enum NetworkCodes network_server_destroy(struct network_server* network_socket);
 int network_server_listen(struct network_server* network_socket);
-int network_server_find_free_socket(struct network_server* network_socket);
-int network_server_read(struct network_server* network_socket, unsigned int i, char* buffer, const unsigned int buffer_size);
-enum NetworkCodes network_server_send(struct network_server* network_socket, unsigned int i, char* buffer, const unsigned int max_message_size);
-enum NetworkCodes network_server_broadcast(struct network_server *network_socket, const unsigned int i, char *buffer, const unsigned int max_message_size);
-enum NetworkCodes network_server_get_client_ip(struct network_server *network_socket, const unsigned int i, char *buffer);
-
-// Not optimal better will be hash_map I guess
-void network_resize_client_list(struct network_server *network_socket);
+int network_server_read(int* socket, char *buffer, const unsigned int buffer_size);
+enum NetworkCodes network_server_send(int* socket, char *buffer, const unsigned int max_message_size);
+enum NetworkCodes network_server_broadcast(struct network_server *network_socket, int* clients_sockets, 
+                  unsigned int max_clients, const unsigned int i, char *buffer, const unsigned int max_message_size);
+enum NetworkCodes network_get_client_ip(int* socket, char *buffer);
 
 #endif

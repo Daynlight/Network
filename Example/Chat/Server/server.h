@@ -8,4 +8,14 @@
   #include <windows.h>
 #endif
 
+
+
+struct clients{
+  int* client_sock;
+  unsigned int max_clients;
+  unsigned int last_client;
+};
+
+
+
 #endif
