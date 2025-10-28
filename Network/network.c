@@ -110,7 +110,7 @@ int network_client_read(struct network_client *network_socket, char *buffer, con
           return ERRORCODE;
   }
 #else
-  val = read(network_socket->client_sock[i], buffer, buffer_size);
+  val = read(network_socket->sock, buffer, buffer_size);
   if(val < 0){
       if(errno == EAGAIN || errno == EWOULDBLOCK)
           return NODATA;
@@ -284,4 +284,23 @@ enum NetworkCodes network_server_broadcast(struct network_server *network_socket
       network_server_send(network_socket, j, buffer,  max_message_size);
 
   return SUCCESS; 
+}
+
+enum NetworkCodes network_server_get_client_ip(struct network_server *network_socket, const unsigned int i, char *buffer){
+  struct sockaddr_in client_addr;
+  socklen_t client_len = sizeof(client_addr);
+
+  if(i >= MAX_CLIENTS)
+    return NOCLIENT;
+
+  char client_ip[INET_ADDRSTRLEN];
+  if (getpeername(network_socket->client_sock[i], (struct sockaddr *)&client_addr, &client_len) != 0) {
+      return ERRORCODE;
+  }
+  inet_ntop(AF_INET, &client_addr.sin_addr, client_ip, sizeof(client_ip));
+
+  strncpy(buffer, client_ip, INET_ADDRSTRLEN - 1);
+  buffer[INET_ADDRSTRLEN - 1] = '\0'; 
+  
+  return SUCCESS;
 };

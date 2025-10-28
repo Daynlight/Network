@@ -81,7 +81,7 @@ int network_server_find_free_socket(struct network_server* network_socket);
 int network_server_read(struct network_server* network_socket, unsigned int i, char* buffer, const unsigned int buffer_size);
 enum NetworkCodes network_server_send(struct network_server* network_socket, unsigned int i, char* buffer, const unsigned int max_message_size);
 enum NetworkCodes network_server_broadcast(struct network_server *network_socket, const unsigned int i, char *buffer, const unsigned int max_message_size);
-const char* network_server_get_client_ip();
+enum NetworkCodes network_server_get_client_ip(struct network_server *network_socket, const unsigned int i, char *buffer);
 
 
 #endif

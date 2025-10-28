@@ -32,11 +32,14 @@ int main() {
     
     while (running) {
         // connect 
-        enum NetworkCodes err = network_server_listen(&network);
-        if(err == ERRORCODE)
+        int client_id = network_server_listen(&network);
+        if(client_id == ERRORCODE)
             printf("Cant connect client!\n");
-        else if(err == SUCCESS)
-            printf("Client connected\n");
+        else if(client_id == SUCCESS){
+            char ip[INET_ADDRSTRLEN];
+            network_server_get_client_ip(&network, client_id, ip);
+            printf("Client connected ip: %s\n", ip);
+        }
 
         // broadcast
         for(int i = 0; i < MAX_CLIENTS; i++){
