@@ -177,11 +177,14 @@ enum NetworkCodes network_server_init(struct network_server *network_socket, con
   fcntl(network_socket->server_sock, F_SETFL, flags | O_NONBLOCK);
 #endif
 
+  network_socket->client_sock = calloc(INITIAL_MAX_CLIENTS, sizeof(int));
+  network_socket->max_clients = INITIAL_MAX_CLIENTS;
+
   return SUCCESS;
 };
 
 enum NetworkCodes network_server_destroy(struct network_server *network_socket) {
-  for(int i = 0; i < MAX_CLIENTS; i++)
+  for(int i = 0; i < network_socket->max_clients; i++)
     if(network_socket->client_sock[i] != -1)
 #ifdef WIN32
       closesocket(network_socket->client_sock[i]);
@@ -195,6 +198,8 @@ enum NetworkCodes network_server_destroy(struct network_server *network_socket) 
 #else
     close(network_socket->server_sock);
 #endif
+
+  free(network_socket->client_sock);
 
 #ifdef WIN32
   WSACleanup();
@@ -232,14 +237,16 @@ int network_server_listen(struct network_server *network_socket) {
 
 int network_server_find_free_socket(struct network_server *network_socket) {
   int socket = -1;
-  for(int i = 0; i < MAX_CLIENTS; i++)
+  for(int i = 0; i < network_socket->max_clients; i++)
     if(network_socket->client_sock[i] == 0){
       socket = i;
       break;
     };
 
-  if(socket == -1)
-    return NOFREESOCKET;
+  if(socket == -1){
+    network_resize_client_list(network_socket);
+    return network_server_find_free_socket(network_socket);
+  }
 
   return socket;
 };
@@ -283,7 +290,7 @@ enum NetworkCodes network_server_send(struct network_server *network_socket, con
 };
 
 enum NetworkCodes network_server_broadcast(struct network_server *network_socket, const unsigned int i, char *buffer, const unsigned int max_message_size) {
-  for(int j = 0; j < MAX_CLIENTS; j++)
+  for(int j = 0; j < network_socket->max_clients; j++)
     if(i != j && network_socket->client_sock[j] > 0)
       network_server_send(network_socket, j, buffer,  max_message_size);
 
@@ -294,7 +301,7 @@ enum NetworkCodes network_server_get_client_ip(struct network_server *network_so
   struct sockaddr_in client_addr;
   socklen_t client_len = sizeof(client_addr);
 
-  if(i >= MAX_CLIENTS)
+  if(i >= network_socket->max_clients || network_socket->client_sock[i] == 0)
     return NOCLIENT;
 
   char client_ip[INET_ADDRSTRLEN];
@@ -308,4 +315,16 @@ enum NetworkCodes network_server_get_client_ip(struct network_server *network_so
   buffer[INET_ADDRSTRLEN - 1] = '\0'; 
   
   return SUCCESS;
+}
+
+void network_resize_client_list(struct network_server *network_socket) {
+  unsigned int new_max_clients =(network_socket->max_clients * 2 + 1); 
+  int* temp = calloc(new_max_clients, sizeof(int));
+  for(int i = 0; i < network_socket->max_clients; i++)
+    temp[i] = network_socket->client_sock[i];
+  
+  free(network_socket->client_sock);
+  network_socket->client_sock = temp;
+  network_socket->max_clients = new_max_clients;
+  printf("clients new max: %d", network_socket->max_clients);
 };

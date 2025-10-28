@@ -42,7 +42,7 @@ int main() {
     };
 
     // broadcast
-    for(int i = 0; i < MAX_CLIENTS; i++){
+    for(int i = 0; i < network.max_clients; i++){
       memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
       if(network.client_sock[i] > 0){
         int valread = network_server_read(&network, i, buffer,  BUFFER_SIZE + NAMESIZE);

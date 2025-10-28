@@ -27,8 +27,8 @@
 #ifndef CONNECT_RETRY_DELAY
 #define CONNECT_RETRY_DELAY 0.2
 #endif
-#ifndef MAX_CLIENTS
-#define MAX_CLIENTS 50
+#ifndef INITIAL_MAX_CLIENTS
+#define INITIAL_MAX_CLIENTS 1
 #endif
 
 
@@ -48,7 +48,8 @@ enum NetworkCodes{
 
 struct network_server{
   int server_sock;
-  int client_sock[MAX_CLIENTS];
+  int* client_sock;
+  unsigned int max_clients;
   struct sockaddr_in serv_addr;
 };
 struct network_client{
@@ -82,6 +83,6 @@ int network_server_read(struct network_server* network_socket, unsigned int i, c
 enum NetworkCodes network_server_send(struct network_server* network_socket, unsigned int i, char* buffer, const unsigned int max_message_size);
 enum NetworkCodes network_server_broadcast(struct network_server *network_socket, const unsigned int i, char *buffer, const unsigned int max_message_size);
 enum NetworkCodes network_server_get_client_ip(struct network_server *network_socket, const unsigned int i, char *buffer);
-
+void network_resize_client_list(struct network_server *network_socket);
 
 #endif
