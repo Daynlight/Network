@@ -83,6 +83,8 @@ int network_server_read(struct network_server* network_socket, unsigned int i, c
 enum NetworkCodes network_server_send(struct network_server* network_socket, unsigned int i, char* buffer, const unsigned int max_message_size);
 enum NetworkCodes network_server_broadcast(struct network_server *network_socket, const unsigned int i, char *buffer, const unsigned int max_message_size);
 enum NetworkCodes network_server_get_client_ip(struct network_server *network_socket, const unsigned int i, char *buffer);
+
+// Not optimal better will be hash_map I guess
 void network_resize_client_list(struct network_server *network_socket);
 
 #endif
