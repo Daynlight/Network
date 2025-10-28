@@ -66,11 +66,11 @@
 //////////////////////////////////////////////////////////////////
 ///////////////////////// Planed Features ////////////////////////
 //////////////////////////////////////////////////////////////////
-// TCP/UDP protocols
-// Highly optimized client system   (no verdict because it is highly dependent from server implementation probably provider for server)
-// Buffer to way encryption x25519  (no verdict because it is highly dependent from server implementation probably provider for server)
-// Buffer compression LZ4           (no verdict because it is highly dependent from server implementation probably provider for server)
-
+// TCP/UDP protocols                (set in server and in client automatically getted from server on connect if possible)
+// Better error checking
+// Highly optimized client system   (no verdict because it is highly dependent from server implementation if it would be c++ I would use templates but it is c :<)
+// Buffer to way encryption x25519  (functions that generate buffer from buffer but encrypted/decrypted)
+// Buffer compression LZ4           (functions that generate buffer from buffer but compressed/uncompressed)
 
 
 #ifndef NETWORK_H
@@ -78,20 +78,17 @@
 
 
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-
-
-
 #ifdef WIN32
   #include <winsock2.h>
   #include <ws2tcpip.h>
 #else
+  #include <unistd.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string.h>
+  #include <unistd.h>
+  #include <fcntl.h>
+  #include <errno.h>
   #include <netdb.h> 
   #include <arpa/inet.h>
 #endif
@@ -103,9 +100,6 @@
 #endif
 #ifndef CONNECT_RETRY_DELAY
 #define CONNECT_RETRY_DELAY 0.2
-#endif
-#ifndef INITIAL_MAX_CLIENTS
-#define INITIAL_MAX_CLIENTS 1
 #endif
 
 

@@ -61,10 +61,8 @@ int main() {
   if(network_server_init(&network, PORT) == ERRORCODE)
     exit(EXIT_FAILURE);
 
-    
-
-  clients.client_sock = calloc(INITIAL_MAX_CLIENTS, sizeof(int));
-  clients.max_clients = INITIAL_MAX_CLIENTS;
+  clients.client_sock = calloc(1, sizeof(int));
+  clients.max_clients = 1;
 
   while (running) {
     // connect 
