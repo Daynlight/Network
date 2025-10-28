@@ -201,7 +201,7 @@ enum NetworkCodes network_server_destroy(struct network_server *network_socket) 
   return SUCCESS;
 };
 
-enum NetworkCodes network_server_listen(struct network_server *network_socket) {
+int network_server_listen(struct network_server *network_socket) {
   int addrlen = sizeof(network_socket->serv_addr);
     
   if (listen(network_socket->server_sock, 3) < 0)
@@ -225,7 +225,7 @@ enum NetworkCodes network_server_listen(struct network_server *network_socket) {
   fcntl(network_socket->client_sock[socket_place], F_SETFL, flags | O_NONBLOCK);
 #endif
 
-  return SUCCESS;
+  return socket_place;
 };
 
 int network_server_find_free_socket(struct network_server *network_socket) {
