@@ -12,29 +12,26 @@ enum NetworkCodes network_client_init(struct network_provider* network_provider,
 #endif
 
   struct addrinfo hints, *res;
-  int err_code;
-
+  
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
 
-  if ((err_code = getaddrinfo(addr, NULL, &hints, &res)) != 0)
+  if (getaddrinfo(addr, NULL, &hints, &res) != 0){
+    freeaddrinfo(res);
     return ERRORCODE;
+  };
+    
 
   if ((network_provider->sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0) {
     freeaddrinfo(res);
     return ERRORCODE;
-  }
+  };
 
   network_provider->serv_addr = *(struct sockaddr_in*)res->ai_addr;
   network_provider->serv_addr.sin_port = htons(port);
 
   freeaddrinfo(res);
-
-#ifndef WIN32
-  int flags = fcntl(network_provider->sock, F_GETFL, 0);
-  fcntl(network_provider->sock, F_SETFL, flags | O_NONBLOCK);
-#endif
 
   return SUCCESS;
 };
@@ -88,15 +85,11 @@ enum NetworkCodes network_client_connect(struct network_provider* network_provid
     return SUCCESS;
   };
 #else
-  unsigned int retry = 0;
-  while (retry <= MAX_CONNECT_RETRYS) {
-    if (connect(network_provider->sock, (struct sockaddr *)&network_provider->serv_addr, sizeof(network_provider->serv_addr)) < 0) {
-      retry++;
-      sleep(CONNECT_RETRY_DELAY);
-    } 
-    else
-      return SUCCESS;
-    };
+  if (connect(network_provider->sock, (struct sockaddr *)&network_provider->serv_addr, sizeof(network_provider->serv_addr)) >= 0) {
+    int flags = fcntl(network_provider->sock, F_GETFL, 0);
+    fcntl(network_provider->sock, F_SETFL, flags | O_NONBLOCK);
+    return SUCCESS;
+  };
   return ERRORCODE;
 #endif
 };

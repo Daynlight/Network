@@ -26,6 +26,8 @@
 // On your server you have to store client sockets and operate on them
 // Make correct operation respected to given client request 
 
+// After client connect it sets his socket to no-blocking
+
 
 
 //////////////////////////////////////////////////////////////////
@@ -91,15 +93,6 @@
   #include <errno.h>
   #include <netdb.h> 
   #include <arpa/inet.h>
-#endif
-
-
-
-#ifndef MAX_CONNECT_RETRYS
-#define MAX_CONNECT_RETRYS  2000
-#endif
-#ifndef CONNECT_RETRY_DELAY
-#define CONNECT_RETRY_DELAY 0.2
 #endif
 
 

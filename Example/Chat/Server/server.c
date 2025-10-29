@@ -12,7 +12,7 @@ int running = 1;
 
 
 
-
+////// [REFACTOR] client vector is not optimal creates inf clients and waste memory
 void resize_clients(struct clients *clients) {
   unsigned int new_max_clients =(clients->max_clients * 2 + 1); 
   int* temp = calloc(new_max_clients, sizeof(int));
@@ -33,6 +33,7 @@ void add_client(struct clients *clients, int socket){
 }
 
 void delete_client(struct clients *clients, int index){
+  clients->client_sock[index] = 0;
   for(int i = index; i < clients->max_clients - 1; i++)
     if(clients->client_sock[i + 1] != 0)
       clients->client_sock[i] = clients->client_sock[i + 1];
