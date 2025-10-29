@@ -60,6 +60,9 @@
 // NODATA       send or read no data
 // DISCONNECT   server or client is disconnecting
 // NOCLIENT     no client to connect
+// DNSERROR     can't find domain
+// SOCKETERROR  can't create socket
+// CONNECTERROR can't connect to server
 // ERRORCODE    error when function called
 // SUCCESS      fuction end up with success
 
@@ -108,10 +111,13 @@ struct network_provider{
 ////////////////////////////// Codes //////////////////////////////
 ///////////////////////////////////////////////////////////////////
 enum NetworkCodes{
-  NODATA = -3,
+  CONNECTERROR = -7,
+  SOCKETERROR = -6,
+  DNSERROR = -5,
+  NODATA = -4,
+  NOCLIENT = -3,
   DISCONNECT = -2,
   ERRORCODE = -1,
-  NOCLIENT = -3,
   SUCCESS = 0
 };
 

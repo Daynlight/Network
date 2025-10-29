@@ -2,8 +2,8 @@
 
 #define PORT 9090
 // #define ADDR "tin-s498831.vm.wmi.amu.edu.pl"
-// #define ADDR "127.0.0.1"
-#define ADDR "err"
+#define ADDR "127.0.0.1"
+// #define ADDR "err"
 
 #define BUFFER_SIZE 100
 #define NAMESIZE 25
@@ -52,15 +52,27 @@ void set_stdin_nonblocking(void) {
 int main(){
   signal(SIGINT, sigint_handler);
 
-  if(network_client_init(&network, ADDR, PORT) == ERRORCODE)
-    printf("Can't init network\n");
+  switch (network_client_init(&network, ADDR, PORT)){
+    case CONNECTERROR:
+      printf("Can't init network\n");
+      exit(EXIT_FAILURE);
+      break;
+    case DNSERROR:
+      printf("Can't find ip from dns!\n");
+      exit(EXIT_FAILURE);
+      break;
+    default: 
+      printf("Server initalized!\n");
+      break;
+  };
 
-  if(network_client_connect(&network) == ERRORCODE){
+  if(network_client_connect(&network)){
     printf("Can't connect to network!\n");
-    exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);  
   }
-  else
+  else{
     printf("Connected to server!\n");
+  }
 
   printf("name: ");
   fgets(name, NAMESIZE -1, stdin);

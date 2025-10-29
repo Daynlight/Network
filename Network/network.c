@@ -19,13 +19,13 @@ enum NetworkCodes network_client_init(struct network_provider* network_provider,
 
   if (getaddrinfo(addr, NULL, &hints, &res) != 0){
     freeaddrinfo(res);
-    return ERRORCODE;
+    return DNSERROR;
   };
     
 
   if ((network_provider->sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0) {
     freeaddrinfo(res);
-    return ERRORCODE;
+    return SOCKETERROR;
   };
 
   network_provider->serv_addr = *(struct sockaddr_in*)res->ai_addr;
@@ -90,7 +90,7 @@ enum NetworkCodes network_client_connect(struct network_provider* network_provid
     fcntl(network_provider->sock, F_SETFL, flags | O_NONBLOCK);
     return SUCCESS;
   };
-  return ERRORCODE;
+  return CONNECTERROR;
 #endif
 };
 
