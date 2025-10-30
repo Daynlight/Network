@@ -14,7 +14,7 @@ char name[NAMESIZE] = {0};
 int running = 1;
 
 
-#include "getIO.h"
+#include "platform.h"
 
 
 
