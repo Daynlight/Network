@@ -29,13 +29,13 @@ void unittests_compression_lz4_compres_decompress(int *total, int *passed){
   char compressed_data[1024];
   char decompressed_data[1024];
   
-  printf("original data: %s\n", data);
   
   compression_lz4_compress(data, sizeof(data), compressed_data);
   compression_lz4_decompress(compressed_data, decompressed_data);
   
-  printf("compressed data: %s\n", compressed_data);
-  printf("decompressed data: %s\n", decompressed_data);
+  // printf("original data: %s\n", data);
+  // printf("compressed data: %s\n", compressed_data);
+  // printf("decompressed data: %s\n", decompressed_data);
 
   if(!strcmp(data, decompressed_data)) (*passed)++;
 }
