@@ -12,35 +12,6 @@ int running = 1;
 
 
 
-////// [REFACTOR] client vector is not optimal creates inf clients and waste memory
-void resize_clients(struct clients *clients) {
-  unsigned int new_max_clients =(clients->max_clients * 2 + 1); 
-  int* temp = calloc(new_max_clients, sizeof(int));
-  for(int i = 0; i < clients->max_clients; i++)
-    temp[i] = clients->client_sock[i];
-  
-  free(clients->client_sock);
-  clients->client_sock = temp;
-  clients->max_clients = new_max_clients;
-  printf("clients new max: %d\n", clients->max_clients);
-};
-
-void add_client(struct clients *clients, int socket){
-  if(clients->last_client >= clients->max_clients)
-    resize_clients(clients);
-  clients->client_sock[clients->last_client] = socket;
-  clients->last_client++;
-}
-
-void delete_client(struct clients *clients, int index){
-  clients->client_sock[index] = 0;
-  for(int i = index; i < clients->max_clients - 1; i++)
-    if(clients->client_sock[i + 1] != 0)
-      clients->client_sock[i] = clients->client_sock[i + 1];
-    else
-      break; 
-}
-
 
 
 void sigint_handler(int sig) {
@@ -49,6 +20,21 @@ void sigint_handler(int sig) {
   free(clients.client_sock);
   exit(EXIT_FAILURE);
 };
+
+
+
+
+
+#ifdef WIN32
+void client_sleep(float time_seconds){
+  Sleep(time_seconds * 1000);
+};
+#else
+void client_sleep(float time_seconds){
+  sleep(time_seconds);
+};
+#endif
+
 
 
 
@@ -70,8 +56,7 @@ int main() {
     int socket = network_server_listen(&network);
     if(socket == ERRORCODE)
       printf("Cant connect client!\n");
-    else if(socket == NOCLIENT){}
-    else {
+    else if(socket >= SUCCESS){
       char ip[INET_ADDRSTRLEN];
       network_get_client_ip(&socket, ip);
       add_client(&clients, socket);
@@ -95,11 +80,7 @@ int main() {
       };
     };
     
-#ifdef _WIN32
-    Sleep(50);
-#else
-    sleep(0.05);
-#endif
+    client_sleep(0.05);
   };
 
   network_server_destroy(&network);
@@ -111,6 +92,7 @@ int main() {
 #else
       close(clients.client_sock[i]);
 #endif
+
   free(clients.client_sock);
 
   return 0;

@@ -3,7 +3,6 @@
 #define PORT 9090
 // #define ADDR "tin-s498831.vm.wmi.amu.edu.pl"
 #define ADDR "127.0.0.1"
-// #define ADDR "err"
 
 #define BUFFER_SIZE 100
 #define NAMESIZE 25
@@ -103,11 +102,11 @@ void client_get_input(){
     strcat(buffer, name);
     strcat(buffer, send_buffer);
 
-    if(send_buffer == NULL || strlen(send_buffer) == 0 || send_buffer[0] == '\0')
+    if(network_check_if_empty_message(send_buffer) == NODATA)
       printf("Can't send empty message\n");
     else
       network_client_send(&network, buffer, strlen(buffer));
-    
+
     printf("> ");
     memset(send_buffer, 0, BUFFER_SIZE);
   };
@@ -183,6 +182,7 @@ int main(){
 
 
   network_client_destroy(&network);
+
   printf("Network destroyed!\n");
 
   return 0;
