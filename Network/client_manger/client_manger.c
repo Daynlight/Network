@@ -1,4 +1,4 @@
-#include "clientManager.h"
+#include "client_manger.h"
 
 void init_clients(struct clients *clients){
   clients->client_sock = calloc(1, sizeof(int));

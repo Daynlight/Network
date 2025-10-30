@@ -2,7 +2,14 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Network LANGUAGES C)
 
-add_library(Network network.c clientManager.c)
+set(src 
+  network.c
+  client_manger/client_manger.c
+  compression/compression.c
+  encryption/encryption.c
+)
+
+add_library(Network ${src})
 target_include_directories(Network PUBLIC ".")
 
 if(WIN32)
