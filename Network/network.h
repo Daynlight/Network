@@ -82,6 +82,9 @@
 #define NETWORK_H
 
 
+#include "client_manger/client_manger.h"
+#include "compression/compression.h"
+
 
 #ifdef WIN32
   #include <winsock2.h>
