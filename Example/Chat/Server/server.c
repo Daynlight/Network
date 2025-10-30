@@ -81,7 +81,7 @@ int main() {
       if(clients.client_sock[i] > 0){
         int valread = network_server_read(&clients.client_sock[i], buffer, BUFFER_SIZE + NAMESIZE);
         char decompressed_data[BUFFER_SIZE + NAMESIZE];
-        compression_rle_decompress(buffer, decompressed_data);
+        compression_lz4_decompress(buffer, decompressed_data);
         switch(valread){
         case DISCONNECT:
           delete_client(&clients, i);

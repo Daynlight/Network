@@ -89,7 +89,7 @@ int main(){
         break;
       default: 
         char decompressed_data[BUFFER_SIZE + NAMESIZE];
-        compression_rle_decompress(read_buffer, decompressed_data);
+        compression_lz4_decompress(read_buffer, decompressed_data);
         printf("%s\n> ", decompressed_data);
         memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
         break;
