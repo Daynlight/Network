@@ -75,7 +75,7 @@
 // Better error checking
 // Highly optimized client system   (no verdict because it is highly dependent from server implementation if it would be c++ I would use templates but it is c :<)
 // Buffer to way encryption x25519  (functions that generate buffer from buffer but encrypted/decrypted)
-// Buffer compression LZ4           (functions that generate buffer from buffer but compressed/uncompressed)
+// Buffer compression RLE           (functions that generate buffer from buffer but compressed/uncompressed)
 
 
 #ifndef NETWORK_H

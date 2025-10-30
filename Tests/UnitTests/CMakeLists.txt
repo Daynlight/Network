@@ -13,5 +13,5 @@ set(headers
 
 
 add_executable(UnitTests ${src})
-
+target_link_libraries(UnitTests Network)
 target_include_directories(UnitTests PUBLIC ".")

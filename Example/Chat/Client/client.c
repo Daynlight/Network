@@ -88,7 +88,9 @@ int main(){
         printf("Error on read!\n");
         break;
       default: 
-        printf("%s\n> ", read_buffer);
+        char decompressed_data[BUFFER_SIZE + NAMESIZE];
+        decompress(read_buffer, decompressed_data);
+        printf("%s\n> ", decompressed_data);
         memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
         break;
     };

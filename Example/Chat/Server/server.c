@@ -80,6 +80,8 @@ int main() {
       memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
       if(clients.client_sock[i] > 0){
         int valread = network_server_read(&clients.client_sock[i], buffer,  BUFFER_SIZE + NAMESIZE);
+        char decompressed_data[BUFFER_SIZE + NAMESIZE];
+        decompress(buffer, decompressed_data);
         switch(valread){
         case DISCONNECT:
           delete_client(&clients, i);
@@ -88,7 +90,7 @@ int main() {
         case NODATA:
           break;
         default:
-          printf("%s\n", buffer);
+          printf("%s\n", decompressed_data);
           network_server_broadcast(&network, clients.client_sock, clients.max_clients, i, buffer, BUFFER_SIZE + NAMESIZE);
           break;
         };

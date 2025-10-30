@@ -95,8 +95,11 @@ void client_get_input(){
 
     if(network_check_if_empty_message(send_buffer) == NODATA)
       printf("Can't send empty message\n");
-    else
-      network_client_send(&network, buffer, strlen(buffer));
+    else{
+      char compressed_data[NAMESIZE + BUFFER_SIZE];
+      compress(buffer, compressed_data);
+      network_client_send(&network, compressed_data, strlen(compressed_data));
+    }
 
     printf("> ");
     memset(send_buffer, 0, BUFFER_SIZE);
