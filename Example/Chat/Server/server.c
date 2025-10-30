@@ -79,7 +79,7 @@ int main() {
     for(int i = 0; i < clients.max_clients; i++){
       memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
       if(clients.client_sock[i] > 0){
-        int valread = network_server_read(&clients.client_sock[i], buffer,  BUFFER_SIZE + NAMESIZE);
+        int valread = network_server_read(&clients.client_sock[i], buffer, BUFFER_SIZE + NAMESIZE);
         char decompressed_data[BUFFER_SIZE + NAMESIZE];
         compression_rle_decompress(buffer, decompressed_data);
         switch(valread){
