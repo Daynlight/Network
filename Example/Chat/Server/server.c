@@ -82,7 +82,6 @@ int main() {
         int valread = network_server_read(&clients.client_sock[i], buffer,  BUFFER_SIZE + NAMESIZE);
         switch(valread){
         case DISCONNECT:
-          close(clients.client_sock[i]);
           delete_client(&clients, i);
           printf("Client disconnected\n");
           break;

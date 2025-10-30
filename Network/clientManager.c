@@ -15,7 +15,6 @@ void destroy_clients(struct clients *clients){
 #endif
 
   free(clients->client_sock);
-
 }
 
 ////// [REFACTOR] client vector is not optimal creates inf clients and waste memory
@@ -33,11 +32,19 @@ void resize_clients(struct clients *clients) {
 void add_client(struct clients *clients, int socket){
   if(clients->last_client >= clients->max_clients)
     resize_clients(clients);
+
   clients->client_sock[clients->last_client] = socket;
   clients->last_client++;
 }
 
 void delete_client(struct clients *clients, int index){
+#ifdef WIN32
+  closesocket(clients->client_sock[index]);
+#else
+  close(clients->client_sock[index]);
+#endif
+
+  // shift right
   clients->client_sock[index] = 0;
   for(int i = index; i < clients->max_clients - 1; i++)
     if(clients->client_sock[i + 1] != 0)
