@@ -4,6 +4,7 @@
 // Client Manager is used to optimal se of clients
 // It uses hash_map for fast look up
 
+
 #ifndef CLIENTMANAGER_H
 #define CLIENTMANAGER_H
 
