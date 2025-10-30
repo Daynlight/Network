@@ -1,19 +1,17 @@
 #ifndef GETIO_H
 #define GETIO_H
 
-
-
 #include <signal.h>
-#ifdef WIN32
-  #include <windows.h>
-  #include <stdio.h>
-  #include <conio.h>
-#endif
-
 
 
 
 #ifdef WIN32
+#include <windows.h>
+#include <stdio.h>
+#include <conio.h>
+
+
+
 void set_stdin_nonblocking(void) {
   HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
   DWORD mode;
@@ -31,6 +29,9 @@ void set_stdin_nonblocking(void) {
     fprintf(stderr, "SetConsoleMode() failed\n");
   }
 }
+
+
+
 
 void client_get_input(){
   if (_kbhit()) {
@@ -71,6 +72,9 @@ void client_get_input(){
   };
 };
 
+
+
+
 void client_sleep(float time_seconds){
   Sleep(time_seconds * 1000);
 };
@@ -98,6 +102,9 @@ void client_get_input(){
     memset(send_buffer, 0, BUFFER_SIZE);
   };
 };
+
+
+
 
 void client_sleep(float time_seconds){
   sleep(time_seconds);

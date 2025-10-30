@@ -78,7 +78,6 @@ int main(){
     client_get_input();
 
     int valread = network_client_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE);
-    
     if (valread == DISCONNECT) {
       printf("\nServer closed the connection.\n");
       running = 0;
