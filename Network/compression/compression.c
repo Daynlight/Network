@@ -3,7 +3,7 @@
 
 
 
-void compress(char *buffer, char *outbuffer) {
+void compression_rle_compress(char *buffer, char *outbuffer) {
   int out_idx = 0;
 
   for (int i = 0; buffer[i] != '\0'; ) {
@@ -24,7 +24,7 @@ void compress(char *buffer, char *outbuffer) {
 
 
 
-void decompress(char *buffer, char *outbuffer) {
+void compression_rle_decompress(char *buffer, char *outbuffer) {
   int out_idx = 0;
 
   for (int i = 0; buffer[i] != '\0'; i += 2) {

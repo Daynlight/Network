@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 
-void compress(char* buffer, char *outbuffer);
-void decompress(char* buffer, char *outbuffer);
+void compression_rle_compress(char* buffer, char *outbuffer);
+void compression_rle_decompress(char* buffer, char *outbuffer);
 
 
 #endif
