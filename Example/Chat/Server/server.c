@@ -14,9 +14,11 @@ int running = 1;
 
 
 void sigint_handler(int sig) {
+  destroy_clients(&clients);
   network_server_destroy(&network);
+  printf("Clients destroyed!\n");
+  printf("Server destroyed!\n");
   running = 0;
-  free(clients.client_sock);
   exit(EXIT_FAILURE);
 };
 
@@ -42,13 +44,19 @@ void client_sleep(float time_seconds){
 int main() {
   signal(SIGINT, sigint_handler);
 
-  printf("Server is running\n");
+  switch (network_server_init(&network, PORT)){
+    case ERRORCODE:
+      printf("Can't Initialize Server");
+      network_server_destroy(&network);
+      exit(EXIT_FAILURE);
+      break;
+    default: 
+      printf("Server Initialized\n");
+      printf("Server is running\n");
+      break;
+  };
 
-  if(network_server_init(&network, PORT) == ERRORCODE)
-    exit(EXIT_FAILURE);
-
-  clients.client_sock = calloc(1, sizeof(int));
-  clients.max_clients = 1;
+  init_clients(&clients);
 
   while (running) {
     // connect 
@@ -82,17 +90,10 @@ int main() {
     client_sleep(0.05);
   };
 
+  destroy_clients(&clients);
   network_server_destroy(&network);
-
-  for(int i = 0; i < clients.max_clients; i++)
-    if(clients.client_sock[i] != -1)
-#ifdef WIN32
-      closesocket(clients.client_sock[i]);
-#else
-      close(clients.client_sock[i]);
-#endif
-
-  free(clients.client_sock);
+  printf("Clients destroyed!\n");
+  printf("Server destroyed!\n");
 
   return 0;
 }

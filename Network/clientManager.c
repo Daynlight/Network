@@ -1,5 +1,23 @@
 #include "clientManager.h"
 
+void init_clients(struct clients *clients){
+  clients->client_sock = calloc(1, sizeof(int));
+  clients->max_clients = 1;
+}
+
+void destroy_clients(struct clients *clients){
+  for(int i = 0; i < clients->max_clients; i++)
+    if(clients->client_sock[i] != -1)
+#ifdef WIN32
+      closesocket(clients->client_sock[i]);
+#else
+      close(clients->client_sock[i]);
+#endif
+
+  free(clients->client_sock);
+
+}
+
 ////// [REFACTOR] client vector is not optimal creates inf clients and waste memory
 void resize_clients(struct clients *clients) {
   unsigned int new_max_clients =(clients->max_clients * 2 + 1); 

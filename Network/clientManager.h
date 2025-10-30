@@ -9,6 +9,7 @@
 #define CLIENTMANAGER_H
 
 #include <stdlib.h>
+#include "network.h"
 
 
 struct clients{
@@ -18,6 +19,8 @@ struct clients{
 };
 
 
+void init_clients(struct clients *clients);
+void destroy_clients(struct clients *clients);
 void resize_clients(struct clients *clients);
 void add_client(struct clients *clients, int socket);
 void delete_client(struct clients *clients, int index);
