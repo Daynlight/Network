@@ -1,0 +1,7 @@
+#ifndef COMPRESSION_TESTS_H
+#define COMPRESSION_TESTS_H
+
+
+
+
+#endif
