@@ -2,7 +2,7 @@
 #define COMPRESSION_TESTS_H
 
 #include <stdio.h>
-#include "string.h"
+#include <string.h>
 
 #include "../../Network/compression/compression.h"
 
