@@ -77,14 +77,20 @@ int main(){
   while (running) {
     client_get_input();
 
-    int valread = network_client_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE);
-    if (valread == DISCONNECT) {
-      printf("\nServer closed the connection.\n");
-      running = 0;
-    } 
-    else if (valread > 0) {
-      printf("%s\n> ", read_buffer);
-      memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
+    switch (network_client_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE)){
+      case NODATA:
+        break;
+      case DISCONNECT:
+        printf("\nServer closed the connection.\n");
+        running = 0;
+        break;
+      case ERRORCODE:
+        printf("Error on read!\n");
+        break;
+      default: 
+        printf("%s\n> ", read_buffer);
+        memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
+        break;
     };
 
     client_sleep(0.05);
