@@ -14,6 +14,10 @@ char name[NAMESIZE] = {0};
 int running = 1;
 
 
+#include "getIO.h"
+
+
+
 
 
 void sigint_handler(int sig){
@@ -23,99 +27,6 @@ void sigint_handler(int sig){
   exit(EXIT_FAILURE);
 };
 
-
-
-
-#ifdef WIN32
-void set_stdin_nonblocking(void) {
-  HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
-  DWORD mode;
-
-  // Get current console mode
-  if (!GetConsoleMode(hStdin, &mode)) {
-    fprintf(stderr, "GetConsoleMode() failed\n");
-    return;
-  }
-
-  // Disable line buffering and echo if desired
-  mode &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-
-  if (!SetConsoleMode(hStdin, mode)) {
-    fprintf(stderr, "SetConsoleMode() failed\n");
-  }
-}
-
-void client_get_input(){
-  if (_kbhit()) {
-    int ch = _getch();
-    if (ch == '\r' || ch == '\n') {
-      send_buffer[strlen(send_buffer)] = '\0';
-      if (strcmp(send_buffer, "exit") == 0) {
-        running = 0;
-        return;
-      };
-
-      char buffer[NAMESIZE + BUFFER_SIZE] = {0};
-      strcat(buffer, name);
-      strcat(buffer, send_buffer);
-
-      if(send_buffer == NULL || strlen(send_buffer) == 0 || send_buffer[0] == '\0')
-        printf("Can't send empty message\n");
-      else
-        network_client_send(&network, buffer, strlen(buffer));
-
-      printf("\n> ");
-      memset(send_buffer, 0, BUFFER_SIZE);
-    } 
-    else if (ch == 8) { // backspace
-      size_t len = strlen(send_buffer);
-      if (len > 0) {
-        send_buffer[len - 1] = '\0';
-        printf("\b \b");
-        fflush(stdout);
-      };
-    } 
-    else {
-      size_t len = strlen(send_buffer);
-      if (len < BUFFER_SIZE - 1)
-        send_buffer[len] = (char)ch, send_buffer[len + 1] = '\0';
-      printf("%c", ch);
-    };
-  };
-};
-
-void client_sleep(float time_seconds){
-  Sleep(time_seconds * 1000);
-};
-
-#else
-void client_get_input(){
-  if (fgets(send_buffer, BUFFER_SIZE, stdin) != NULL) {
-    send_buffer[strcspn(send_buffer, "\n")] = 0;
-    
-    if (strcmp(send_buffer, "exit") == 0) {
-      running = 0;
-      return;
-    };
-
-    char buffer[NAMESIZE + BUFFER_SIZE] = {0};
-    strcat(buffer, name);
-    strcat(buffer, send_buffer);
-
-    if(network_check_if_empty_message(send_buffer) == NODATA)
-      printf("Can't send empty message\n");
-    else
-      network_client_send(&network, buffer, strlen(buffer));
-
-    printf("> ");
-    memset(send_buffer, 0, BUFFER_SIZE);
-  };
-};
-
-void client_sleep(float time_seconds){
-  sleep(time_seconds);
-};
-#endif
 
 
 

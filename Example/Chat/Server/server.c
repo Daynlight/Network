@@ -6,7 +6,6 @@
 
 struct network_provider network = {0};
 struct clients clients = {0};
-
 char buffer[BUFFER_SIZE + NAMESIZE] = {0};
 int running = 1;
 
