@@ -97,7 +97,7 @@ void client_get_input(){
       printf("Can't send empty message\n");
     else{
       char compressed_data[NAMESIZE + BUFFER_SIZE];
-      compression_lz4_compress(buffer, strlen(buffer), compressed_data);
+      compression_rle_compress(buffer, compressed_data);
       network_client_send(&network, compressed_data, strlen(compressed_data));
     }
 
