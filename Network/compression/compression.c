@@ -1,5 +1,6 @@
 #include "compression.h"
-#include <string.h>
+
+
 
 
 
@@ -42,21 +43,6 @@ void compression_rle_decompress(char *buffer, char *outbuffer) {
 
 
 
-
-
-
-
-
-
-
-
-
-#include <stdint.h>
-
-#define WINDOW_SIZE 64
-#define MAX_LENGTH 255
-
-// Compress and store out_len at beginning of outbuffer
 void compression_lz4_compress(char *buffer, int in_len, char *outbuffer) {
     int in_idx = 0;
     int out_idx = 4;
@@ -100,7 +86,9 @@ void compression_lz4_compress(char *buffer, int in_len, char *outbuffer) {
 }
 
 
-// Decompress using out_len stored in first 4 bytes
+
+
+
 void compression_lz4_decompress(char *buffer, char *outbuffer) {
     int in_idx = 4;  // skip first 4 bytes
     int out_idx = 0;

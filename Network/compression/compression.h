@@ -2,6 +2,8 @@
 #define COMPRESSION_H
 
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 
 #define WINDOW_SIZE 255  // look-back window
 #define MAX_LENGTH 255   // max match length
