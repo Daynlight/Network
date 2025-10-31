@@ -20,7 +20,7 @@ void compression_rle_compress(char *buffer, char *outbuffer) {
   }
 
   outbuffer[out_idx] = '\0';
-}
+};
 
 
 
@@ -32,10 +32,9 @@ void compression_rle_decompress(char *buffer, char *outbuffer) {
     int count = (unsigned char)buffer[i];
     char c = buffer[i + 1];
 
-    for (int j = 0; j < count; j++) {
+    for (int j = 0; j < count; j++)
       outbuffer[out_idx++] = c;
-    }
-  }
+  };
 
   outbuffer[out_idx] = '\0';
-}
+};
