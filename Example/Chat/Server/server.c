@@ -92,8 +92,20 @@ int main() {
       
         switch(valread){
         case DISCONNECT:
+          char data[BUFFER_SIZE + NAMESIZE] = {0};
+          strcat(data, "Client ");
+          strcat(data, clients.clientData[i].name);
+          strcat(data, " disconnected");
+          char compressed_data[BUFFER_SIZE + NAMESIZE] = {};
+          compression_rle_compress(data, compressed_data);
+          
+          printf("%s\n", data);
+          for(int j = 0; j < clients.last_client; j++)
+            if(i != j)
+              network_server_send(&(clients.clientData[j].socket_id), compressed_data, BUFFER_SIZE + NAMESIZE);
+          
           delete_client(&clients, i);
-          printf("Client disconnected\n");
+          
           break;
         case NODATA:
           break;
