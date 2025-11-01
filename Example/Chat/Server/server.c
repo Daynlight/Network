@@ -66,7 +66,7 @@ int main() {
       };
     };
 
-    sleep(0.5);
+    sleep(0.05);
   };
 
   // clean up

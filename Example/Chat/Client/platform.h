@@ -4,12 +4,54 @@
 #include <signal.h>
 
 
+void client_commands(char* request){
+  if (strcmp(request, "exit") == 0) {   // exit command
+    running = 0;
+    return;
+  };
+};
+
+
+void send_request(char *message){
+  // change new line to null terminator
+  message[strcspn(message, "\n")] = 0;
+  
+  // run client commands
+  client_commands(message);
+  
+  // send message buffer
+  char request[NAMESIZE + BUFFER_SIZE] = {0};
+  
+  if (message[0] == '@'){         // Private Message    
+    request[0] = '3';
+    strcat(request + 1, message);
+  }
+  else{                               // Public Message
+    request[0] = '2';
+    strcat(request + 1, message);
+  }
+    
+  // check if message is valid
+  if(network_check_if_empty_message(message) == NODATA){
+    printf("Can't send empty message\n");
+    return;
+  };
+
+  // compress request
+  char compressed_request[NAMESIZE + BUFFER_SIZE];
+  compression_rle_compress(request, compressed_request);
+
+  // send request
+  network_client_send(&network, compressed_request, strlen(compressed_request));
+  
+  printf("> ");
+};
+
 
 #ifdef WIN32
 #include <windows.h>
 #include <stdio.h>
 #include <conio.h>
-
 
 
 void set_stdin_nonblocking(void) {
@@ -72,55 +114,11 @@ void client_get_input(){
   };
 };
 
-
-
-
-void client_sleep(float time_seconds){
-  Sleep(time_seconds * 1000);
-};
-
 #else
-void client_get_input(){
-  if (fgets(send_buffer, BUFFER_SIZE, stdin) != NULL) {
-    send_buffer[strcspn(send_buffer, "\n")] = 0;
-    
-    if (strcmp(send_buffer, "exit") == 0) {
-      running = 0;
-      return;
-    };
-
-    char buffer[NAMESIZE + BUFFER_SIZE] = {0};
-
-    
-    if (send_buffer[0] == 64){
-      buffer[0] = '3';
-      strcat(buffer + 1, send_buffer);
-    }
-    else{
-      buffer[0] = '2';
-      strcat(buffer + 1, send_buffer);
-    }
-      
-
-    if(network_check_if_empty_message(send_buffer) == NODATA)
-      printf("Can't send empty message\n");
-    else{
-      char compressed_data[NAMESIZE + BUFFER_SIZE];
-      compression_rle_compress(buffer, compressed_data);
-      network_client_send(&network, compressed_data, strlen(compressed_data));
-    };
-
-    printf("> ");
-    memset(send_buffer, 0, BUFFER_SIZE);
-  };
+void client_noblocking_get_input(char* buffer){
+  if (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {};
 };
 
-
-
-
-void client_sleep(float time_seconds){
-  sleep(time_seconds);
-};
 #endif
 
 

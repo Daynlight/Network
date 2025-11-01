@@ -16,7 +16,6 @@ enum Operations{
 
 
 struct network_provider network = {0};
-char send_buffer[BUFFER_SIZE] = {0};
 char read_buffer[BUFFER_SIZE + NAMESIZE] = {0};
 char name[NAMESIZE] = {0};
 int running = 1;
@@ -88,7 +87,9 @@ int main(){
 
   printf("> ");
   while (running) {
-    client_get_input();
+    char send_buffer[BUFFER_SIZE + NAMESIZE] = {0};
+    client_noblocking_get_input(send_buffer);
+    send_request(send_buffer);
 
     switch (network_client_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE)){
       case NODATA:
@@ -108,7 +109,7 @@ int main(){
         break;
     };
 
-    client_sleep(0.05);
+    sleep(0.05);
   };
 
 
