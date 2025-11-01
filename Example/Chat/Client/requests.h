@@ -12,6 +12,7 @@ Commands:
 /help - displays client commands
 /quit - exit from program
 /list - list users names on server
+/me   - prints your name
 
 User name Validation:
 * User can't contains '@' and '/' chars
@@ -51,13 +52,18 @@ void client_register(struct network_provider* network, char *name){
 };
 
 
-int client_commands(char* request, int *running){
+int client_commands(char* request, int *running, char* name){
   if (strcmp(request, "/quit") == 0) {   // exit command
     *running = 0;
     return 1;
   }
   else if(strcmp(request, "/help") == 0){
     help_command();
+    return 1;
+  }
+  else if(strcmp(request, "/me") == 0){
+    printf("%s\n", name);
+    printf("> ");
     return 1;
   }
   return 0;

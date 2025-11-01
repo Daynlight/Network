@@ -66,7 +66,7 @@ int main(){
 
     // requests
     if(client_noblocking_get_input(request))  // read input
-      if(!client_commands(request, &running)) // client commands
+      if(!client_commands(request, &running, name)) // client commands
         send_request(&network, request);      // send to server
 
     // operate responds
