@@ -29,10 +29,28 @@ void client_register(struct network_provider* network, char *name){
 
 
 int client_commands(char* request, int *running){
-  if (strcmp(request, "exit") == 0) {   // exit command
-    running = 0;
+  if (strcmp(request, "/quit") == 0) {   // exit command
+    *running = 0;
     return 1;
-  };
+  }
+  else if(strcmp(request, "/help") == 0){
+    printf(R"(
+Commands: 
+/help - displays client commands
+/quit - exit from program
+/list - list users names on server
+
+User name Validation:
+* User can't have '@' char
+* User name must be unique if already exists on server server will disconnect new user with same name
+
+How to use:
+* You can type message to all users after > char
+* You can type private message via @<username>@<message>
+> )");
+
+    return 1;
+  }
   return 0;
 };
 
