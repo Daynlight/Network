@@ -1,11 +1,9 @@
 #include "server.h"
 
 
-// enum Operations{
-//   REGISTER = "1",         // 1\n<Name>
-//   SENDMESSAGE = "2",      // 2\n<Message>
-//   PRIVATEMESSAGE = "3"    // 3\n<User>\n<Message>
-// };
+//   REGISTER = "1",         // 1<Name>
+//   SENDMESSAGE = "2",      // 2<Message>
+//   PRIVATEMESSAGE = "3"    // 3@<User>@<Message>
 
 
 
