@@ -45,6 +45,9 @@ int main(){
       printf("Connected to server!\n");  
   };
 
+  // show help command
+  help_command();
+
   // register
   char name[NAMESIZE] = {0};
   client_register(&network, name);

@@ -6,6 +6,24 @@
 #include "platform.h"
 
 
+void help_command(){
+  printf(R"(
+Commands: 
+/help - displays client commands
+/quit - exit from program
+/list - list users names on server
+
+User name Validation:
+* User can't contains '@' and '/' chars
+* User name must be unique if already exists on server server will disconnect new user with same name
+
+How to use:
+* You can type message to all users after > char
+* You can type private message via @<username>@<message>
+> )");
+};
+
+
 void client_register(struct network_provider* network, char *name){
   // get name
   printf("name: ");
@@ -13,6 +31,11 @@ void client_register(struct network_provider* network, char *name){
 
   // check for incorrect name
   if(strchr(name, '@') != NULL){
+    printf("invalid username: %s\n", name);
+    exit(EXIT_FAILURE);
+  };
+
+  if(strchr(name, '/') != NULL){
     printf("invalid username: %s\n", name);
     exit(EXIT_FAILURE);
   };
@@ -34,21 +57,7 @@ int client_commands(char* request, int *running){
     return 1;
   }
   else if(strcmp(request, "/help") == 0){
-    printf(R"(
-Commands: 
-/help - displays client commands
-/quit - exit from program
-/list - list users names on server
-
-User name Validation:
-* User can't have '@' char
-* User name must be unique if already exists on server server will disconnect new user with same name
-
-How to use:
-* You can type message to all users after > char
-* You can type private message via @<username>@<message>
-> )");
-
+    help_command();
     return 1;
   }
   return 0;
@@ -65,11 +74,14 @@ void send_request(struct network_provider *network, char *request){
   // send message buffer
   char send_request[NAMESIZE + BUFFER_SIZE] = {0};
   
-  if (request[0] == '@'){         // Private Message    
+  if (request[0] == '@'){                 // Private Message    
     send_request[0] = '3';
     strcat(send_request + 1, request);
   }
-  else{                               // Public Message
+  else if(strcmp(request, "/list") == 0){ // List users
+    send_request[0] = '4';
+  }
+  else{                                   // Public Message
     send_request[0] = '2';
     strcat(send_request + 1, request);
   }

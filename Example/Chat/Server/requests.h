@@ -36,6 +36,12 @@ void register_user(char *decompressed_message, struct clients* clients, int i){
     return;
   };
 
+  if(strchr(name, '/') != NULL){
+    printf("invalid username: %s\n", name);
+    delete_client(clients, i);
+    return;
+  };
+
   // check if user already logged
   for(int j = 0; j < clients->last_client; j++)
     if(strcmp(clients->clientData[j].name, name) == 0){
@@ -126,7 +132,23 @@ void private_message(char *decompressed_message, struct clients *clients, int i)
   printf("private message to %s> %s\n", target_name, message);
 };
 
+void list_users(struct clients *clients, int i){
+  for(int j = 0; j < clients->last_client; j++){
+    // create respond
+    char respond[NAMESIZE + BUFFER_SIZE] = {0};
+    respond[0] = '\n';
+    strcat(respond, "* ");
+    strcat(respond, clients->clientData[j].name);
 
+    // compress respond
+    char compressed_respond[NAMESIZE + BUFFER_SIZE];
+    compression_rle_compress(respond, compressed_respond);
+
+    // send respond
+    network_server_send(&clients->clientData[i].socket_id, compressed_respond, strlen(compressed_respond));
+  };
+  printf("%s listed users\n", clients->clientData[i].name);
+};
 
 
 
@@ -142,6 +164,8 @@ void respond(char *decompressed_message, struct clients *clients, int i){
   case '3':                                               // Private Message   -   3@<User>@<Message>
     private_message(decompressed_message, clients, i);
     break;
+  case '4':
+    list_users(clients, i);
     default:
       break;
   };
