@@ -88,8 +88,8 @@ int main(){
   printf("> ");
   while (running) {
     char send_buffer[BUFFER_SIZE + NAMESIZE] = {0};
-    client_noblocking_get_input(send_buffer);
-    send_request(send_buffer);
+    if(client_noblocking_get_input(send_buffer))
+      send_request(send_buffer);
 
     switch (network_client_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE)){
       case NODATA:

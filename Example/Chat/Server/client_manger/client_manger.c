@@ -10,6 +10,7 @@ void init_clients(struct clients *clients){
   clients->max_clients = 1;
 };
 
+
 void destroy_clients(struct clients *clients){
   for(int i = 0; i < clients->max_clients; i++)
     if(clients->clientData[i].socket_id != -1)
@@ -51,17 +52,21 @@ void add_client(struct clients *clients, int socket){
 
 
 void delete_client(struct clients *clients, int index){
+  // close socket
 #ifdef WIN32
   closesocket(clients->client_sock[index]);
 #else
   close(clients->clientData[index].socket_id);
 #endif
 
+  // clean client data
+  memset(&(clients->clientData[index]), 0, sizeof(clients->clientData[index]));
+
   // shift users
-  clients->clientData[index].socket_id = 0;
   for(int i = index; i < clients->max_clients - 1; i++)
     if(clients->clientData[i + 1].socket_id != 0)
       clients->clientData[i] = clients->clientData[i + 1];
-    else
-      break; 
+    
+  // update clients
+  clients->last_client--;
 };

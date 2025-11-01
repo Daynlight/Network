@@ -115,8 +115,11 @@ void client_get_input(){
 };
 
 #else
-void client_noblocking_get_input(char* buffer){
-  if (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {};
+
+int client_noblocking_get_input(char* buffer){
+  if (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
+    return 1;
+  };
 };
 
 #endif
