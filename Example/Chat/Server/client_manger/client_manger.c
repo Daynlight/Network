@@ -6,7 +6,7 @@
 
 
 void init_clients(struct clients *clients){
-  clients->clientData = calloc(1, sizeof(int));
+  clients->clientData = calloc(1, sizeof(struct clientData));
   clients->max_clients = 1;
 };
 

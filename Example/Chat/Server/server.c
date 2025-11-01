@@ -1,13 +1,10 @@
 #include "server.h"
 
+
+
 struct network_provider network = {0};
 struct clients clients = {0};
-struct clientData clientData = {0};
-char buffer[BUFFER_SIZE + NAMESIZE] = {0};
 int running = 1;
-
-
-#include "requests.h"
 
 
 void sigint_handler(int sig) {
@@ -21,8 +18,10 @@ void sigint_handler(int sig) {
 
 
 int main() {
+  // SIGINT callback
   signal(SIGINT, sigint_handler);
 
+  // Init server
   switch (network_server_init(&network, PORT)){
     case ERRORCODE:
       printf("Can't Initialize Server");
@@ -35,32 +34,34 @@ int main() {
       break;
   };
 
+  // Init clients
   init_clients(&clients);
 
   while (running) {
     // listen for new connections
-    listen_for_connections();
+    listen_for_connections(&network, &clients);
 
     // responds
     for(int i = 0; i < clients.last_client; i++){
-      memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
+      char buffer[BUFFER_SIZE + NAMESIZE] = {0};
+
       if(clients.clientData[i].socket_id > 0){
 
         // read requests
         int valread = network_server_read(&clients.clientData[i].socket_id, buffer, BUFFER_SIZE + NAMESIZE);
-        char decompressed_data[BUFFER_SIZE + NAMESIZE];
-        compression_rle_decompress(buffer, decompressed_data);
+        char decompressed_request[BUFFER_SIZE + NAMESIZE];
+        compression_rle_decompress(buffer, decompressed_request);
       
         // respond to request
         switch(valread){
-        case DISCONNECT:
-          disconnect_user(i);
+          case DISCONNECT:
+            disconnect_user(&clients, i);
+            break;
+          case NODATA:
+            break;
+          default:
+            respond(decompressed_request, &clients, i);
           break;
-        case NODATA:
-          break;
-        default:
-          respond(decompressed_data, i);
-        break;
         };
 
       };

@@ -8,10 +8,9 @@
 #ifndef CLIENTMANAGER_H
 #define CLIENTMANAGER_H
 
-#include "../server.h"
-#include "network.h"
 
-#include <stdlib.h>
+#include "../../../Macro.h"
+#include "network.h"
 
 
 struct clientData{

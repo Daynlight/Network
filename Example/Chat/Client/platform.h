@@ -1,52 +1,7 @@
-#ifndef GETIO_H
-#define GETIO_H
+#ifndef PLATFORM_H
+#define PLATFORM_H
 
-#include <signal.h>
-
-
-void client_commands(char* request){
-  if (strcmp(request, "exit") == 0) {   // exit command
-    running = 0;
-    return;
-  };
-};
-
-
-void send_request(char *message){
-  // change new line to null terminator
-  message[strcspn(message, "\n")] = 0;
-  
-  // run client commands
-  client_commands(message);
-  
-  // send message buffer
-  char request[NAMESIZE + BUFFER_SIZE] = {0};
-  
-  if (message[0] == '@'){         // Private Message    
-    request[0] = '3';
-    strcat(request + 1, message);
-  }
-  else{                               // Public Message
-    request[0] = '2';
-    strcat(request + 1, message);
-  }
-    
-  // check if message is valid
-  if(network_check_if_empty_message(message) == NODATA){
-    printf("Can't send empty message\n");
-    return;
-  };
-
-  // compress request
-  char compressed_request[NAMESIZE + BUFFER_SIZE];
-  compression_rle_compress(request, compressed_request);
-
-  // send request
-  network_client_send(&network, compressed_request, strlen(compressed_request));
-  
-  printf("> ");
-};
-
+#include "../../Macro.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -75,7 +30,7 @@ void set_stdin_nonblocking(void) {
 
 
 
-void client_get_input(){
+void client_noblocking_get_input(){
   if (_kbhit()) {
     int ch = _getch();
     if (ch == '\r' || ch == '\n') {
@@ -116,13 +71,16 @@ void client_get_input(){
 
 #else
 
-int client_noblocking_get_input(char* buffer){
-  if (fgets(buffer, BUFFER_SIZE, stdin) != NULL) {
+int client_noblocking_get_input(char* request){
+  if (fgets(request, BUFFER_SIZE, stdin) != NULL) {
+    // change new line to null terminator
+    request[strcspn(request, "\n")] = 0;
+
     return 1;
   };
+
+  return 0;
 };
 
 #endif
-
-
 #endif

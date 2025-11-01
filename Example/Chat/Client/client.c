@@ -1,27 +1,9 @@
 #include "client.h"
 
-#define PORT 9090
-// #define ADDR "tin-s498831.vm.wmi.amu.edu.pl"
-#define ADDR "127.0.0.1"
-
-#define BUFFER_SIZE 100
-#define NAMESIZE 25
-
-
-enum Operations{
-  Register = 1,         // 1\n<Name>
-  SendMessage = 2,      // 2\n<Message>
-  PrivateMessage = 3    // 3\n<User>\n<Message>
-};
 
 
 struct network_provider network = {0};
-char read_buffer[BUFFER_SIZE + NAMESIZE] = {0};
-char name[NAMESIZE] = {0};
 int running = 1;
-
-
-#include "platform.h"
 
 
 void sigint_handler(int sig){
@@ -32,13 +14,11 @@ void sigint_handler(int sig){
 };
 
 
-
-
-
-
 int main(){
+  // SIGINT callback
   signal(SIGINT, sigint_handler);
-
+  
+  // Init Client
   switch (network_client_init(&network, ADDR, PORT)){
     case CONNECTERROR:
       printf("Can't init network\n");
@@ -53,6 +33,7 @@ int main(){
       break;
   };
 
+  // Connect to server
   switch (network_client_connect(&network)){
     case CONNECTERROR:
       printf("Can't connect to network!\n");
@@ -64,22 +45,12 @@ int main(){
       printf("Connected to server!\n");  
   };
 
-
-  printf("name: ");
-  fgets(name, NAMESIZE -1, stdin);
-  name[strcspn(name, "\n")] = 0;
-  
-  char namebuffer[NAMESIZE] = "";
-
-  strcat(namebuffer, "1");
-  strcat(namebuffer, name);
-  char compressed_name[NAMESIZE + BUFFER_SIZE];
-  compression_rle_compress(namebuffer, compressed_name);
-  network_client_send(&network, compressed_name, NAMESIZE + BUFFER_SIZE);    // Register
-  
+  // register
+  char name[NAMESIZE] = {0};
+  client_register(&network, name);
   printf("logged as %s\n", name);
 
-
+  // set noblocking
 #ifndef WIN32
   fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
 #endif
@@ -87,11 +58,16 @@ int main(){
 
   printf("> ");
   while (running) {
-    char send_buffer[BUFFER_SIZE + NAMESIZE] = {0};
-    if(client_noblocking_get_input(send_buffer))
-      send_request(send_buffer);
+    char request[BUFFER_SIZE + NAMESIZE] = {0};
+    char respond[BUFFER_SIZE + NAMESIZE] = {0};
 
-    switch (network_client_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE)){
+    // requests
+    if(client_noblocking_get_input(request))  // read input
+      if(!client_commands(request, &running)) // client commands
+        send_request(&network, request);      // send to server
+
+    // operate responds
+    switch (network_client_read(&network, respond, BUFFER_SIZE + NAMESIZE)){
       case NODATA:
         break;
       case DISCONNECT:
@@ -102,19 +78,17 @@ int main(){
         printf("Error on read!\n");
         break;
       default: 
-        char decompressed_data[BUFFER_SIZE + NAMESIZE];
-        compression_rle_decompress(read_buffer, decompressed_data);
-        printf("%s\n> ", decompressed_data);
-        memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
+        char decompressed_respond[BUFFER_SIZE + NAMESIZE];
+        compression_rle_decompress(respond, decompressed_respond);
+        printf("%s\n> ", decompressed_respond);
         break;
     };
 
     sleep(0.05);
   };
 
-
+  // clean up
   network_client_destroy(&network);
-
   printf("Network destroyed!\n");
 
   return 0;
