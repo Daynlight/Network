@@ -28,13 +28,13 @@ void disconnect_user(int i){
   strcat(data, " disconnected");
   char compressed_data[BUFFER_SIZE + NAMESIZE] = {};
   compression_rle_compress(data, compressed_data);
+  
+  delete_client(&clients, i);
 
   printf("%s\n", data);
   for(int j = 0; j < clients.last_client; j++)
-    if(i != j)
-      network_server_send(&(clients.clientData[j].socket_id), compressed_data, BUFFER_SIZE + NAMESIZE);
+    network_server_send(&(clients.clientData[j].socket_id), compressed_data, BUFFER_SIZE + NAMESIZE);
 
-  delete_client(&clients, i);
 }
 
 void public_message(char *decompressed_data, int i){

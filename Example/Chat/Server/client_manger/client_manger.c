@@ -20,7 +20,7 @@ void destroy_clients(struct clients *clients){
 ////// [REFACTOR] client vector is not optimal creates inf clients and waste memory
 void resize_clients(struct clients *clients) {
   unsigned int new_max_clients =(clients->max_clients * 2 + 1); 
-  struct clientData* temp = calloc(new_max_clients, sizeof(int));
+  struct clientData* temp = calloc(new_max_clients, sizeof(struct clientData));
   for(int i = 0; i < clients->max_clients; i++)
     temp[i] = clients->clientData[i];
   
