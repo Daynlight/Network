@@ -50,7 +50,7 @@ int main(){
       exit(EXIT_FAILURE);
       break;
     default: 
-      printf("Server initalized!\n");
+      printf("Client initalized!\n");
       break;
   };
 
