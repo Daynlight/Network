@@ -275,16 +275,6 @@ enum NetworkCodes network_server_send(int* socket, char *buffer, const unsigned 
 
 
 
-enum NetworkCodes network_server_broadcast(struct network_provider *network_provider, int* clients_sockets, unsigned int max_clients, const unsigned int i, char *buffer, const unsigned int max_message_size) {
-  for(int j = 0; j < max_clients; j++)
-    if(i != j && clients_sockets[j] > 0)
-      network_server_send(&(clients_sockets[j]), buffer,  max_message_size);
-
-  return SUCCESS; 
-};
-
-
-
 
 enum NetworkCodes network_get_client_ip(int* socket, char *buffer){
   struct sockaddr_in client_addr;

@@ -150,8 +150,6 @@ enum NetworkCodes network_server_destroy(struct network_provider* network_provid
 int network_server_listen(struct network_provider* network_provider);
 int network_server_read(int* socket, char *buffer, const unsigned int buffer_size);
 enum NetworkCodes network_server_send(int* socket, char *buffer, const unsigned int max_message_size);
-enum NetworkCodes network_server_broadcast(struct network_provider *network_provider, int* clients_sockets, 
-                  unsigned int max_clients, const unsigned int i, char *buffer, const unsigned int max_message_size);
 enum NetworkCodes network_get_client_ip(int* socket, char *buffer); 
 
 
