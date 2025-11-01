@@ -90,8 +90,17 @@ void client_get_input(){
     };
 
     char buffer[NAMESIZE + BUFFER_SIZE] = {0};
-    buffer[0] ='2';
-    strcat(buffer + 1, send_buffer);
+
+    
+    if (send_buffer[0] == 64){
+      buffer[0] = '3';
+      strcat(buffer + 1, send_buffer);
+    }
+    else{
+      buffer[0] = '2';
+      strcat(buffer + 1, send_buffer);
+    }
+      
 
     if(network_check_if_empty_message(send_buffer) == NODATA)
       printf("Can't send empty message\n");

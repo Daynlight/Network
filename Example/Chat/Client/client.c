@@ -103,7 +103,7 @@ int main(){
       default: 
         char decompressed_data[BUFFER_SIZE + NAMESIZE];
         compression_rle_decompress(read_buffer, decompressed_data);
-        printf("%s\n> ", decompressed_data + 1);
+        printf("%s\n> ", decompressed_data);
         memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
         break;
     };

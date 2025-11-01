@@ -101,25 +101,46 @@ int main() {
         
           if(decompressed_data[0] == '1'){       // Register
             char name[NAMESIZE];
-            strcpy(name, decompressed_data);
+            strcpy(name, decompressed_data + 1);
             strcpy(clients.clientData[i].name, name);
             printf("user %s registered\n", clients.clientData[i].name);
           }
           else if(decompressed_data[0] == '2'){  // Message
-            printf("%s\n", decompressed_data);
             char data[NAMESIZE + BUFFER_SIZE] = {0};
             strcat(data, clients.clientData[i].name);
             strcat(data, ": ");
             strcat(data, decompressed_data + 1);
+            printf("public message: %s\n", data);
             char compressed_data[NAMESIZE + BUFFER_SIZE];
             compression_rle_compress(data, compressed_data);
             for(int j = 0; j < clients.last_client; j++)
               if(i != j && clients.clientData[j].socket_id > 0)
                 network_server_send(&(clients.clientData[j].socket_id), compressed_data, BUFFER_SIZE + NAMESIZE);
-          
           }
           else if(decompressed_data[0] == '3'){  // Private Message
-          
+            char data[NAMESIZE + BUFFER_SIZE] = {0};
+            
+            // get user name
+            char* first = strchr(decompressed_data, '@'); 
+            char* last = strchr(decompressed_data + 2, '@');
+            int length = last - first;
+            char target_name[NAMESIZE + BUFFER_SIZE] = {0};
+            strncpy(target_name, decompressed_data + 2, length - 1);
+            
+            // make message
+            strcat(data, clients.clientData[i].name);
+            strcat(data, " <priv>: ");
+            strcat(data, decompressed_data + length + 2);
+            char compressed_data[NAMESIZE + BUFFER_SIZE];
+
+            compression_rle_compress(data, compressed_data);
+            
+            printf("private message to %s: %s\n", target_name, data);
+
+            // send to all
+            for(int j = 0; j < clients.last_client; j++)
+              if(i != j && clients.clientData[j].socket_id > 0 && strcmp(clients.clientData[j].name, target_name) == 0)
+                network_server_send(&(clients.clientData[j].socket_id), compressed_data, BUFFER_SIZE + NAMESIZE);
           };
         break;
         };
