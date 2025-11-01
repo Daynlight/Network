@@ -25,14 +25,6 @@ int running = 1;
 #include "platform.h"
 
 
-enum Operations{
-  Register = 1,
-  SendMessage = 2,
-  PrivateMessage = 3
-};
-
-
-
 void sigint_handler(int sig){
   network_client_destroy(&network);
   printf("Network destroyed!\n");
@@ -76,8 +68,16 @@ int main(){
 
   printf("name: ");
   fgets(name, NAMESIZE -1, stdin);
-  name[strcspn(name, "\n")] = ':';
-  strcat(name, " ");
+  name[strcspn(name, "\n")] = 0;
+  
+  char namebuffer[NAMESIZE] = "";
+
+  strcat(namebuffer, "1");
+  strcat(namebuffer, name);
+  char compressed_name[NAMESIZE + BUFFER_SIZE];
+  compression_rle_compress(namebuffer, compressed_name);
+  network_client_send(&network, compressed_name, NAMESIZE + BUFFER_SIZE);    // Register
+  
   printf("logged as %s\n", name);
 
 
@@ -103,7 +103,7 @@ int main(){
       default: 
         char decompressed_data[BUFFER_SIZE + NAMESIZE];
         compression_rle_decompress(read_buffer, decompressed_data);
-        printf("%s\n> ", decompressed_data);
+        printf("%s\n> ", decompressed_data + 1);
         memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
         break;
     };

@@ -1,11 +1,11 @@
 #include "server.h"
 
 
-enum Operations{
-  Register = 1,         // 1\n<Name>
-  SendMessage = 2,      // 2\n<Message>
-  PrivateMessage = 3    // 3\n<User>\n<Message>
-};
+// enum Operations{
+//   REGISTER = "1",         // 1\n<Name>
+//   SENDMESSAGE = "2",      // 2\n<Message>
+//   PRIVATEMESSAGE = "3"    // 3\n<User>\n<Message>
+// };
 
 
 
@@ -81,13 +81,15 @@ int main() {
       break;
     };
 
-    // broadcast
+
     for(int i = 0; i < clients.max_clients; i++){
       memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
       if(clients.clientData[i].socket_id > 0){
+
         int valread = network_server_read(&clients.clientData[i].socket_id, buffer, BUFFER_SIZE + NAMESIZE);
         char decompressed_data[BUFFER_SIZE + NAMESIZE];
         compression_rle_decompress(buffer, decompressed_data);
+      
         switch(valread){
         case DISCONNECT:
           delete_client(&clients, i);
@@ -96,12 +98,30 @@ int main() {
         case NODATA:
           break;
         default:
-          printf("%s\n", decompressed_data);
+        
+          if(decompressed_data[0] == '1'){       // Register
+            char name[NAMESIZE];
+            strcpy(name, decompressed_data);
+            strcpy(clients.clientData[i].name, name);
+            printf("user %s registered\n", clients.clientData[i].name);
+          }
+          else if(decompressed_data[0] == '2'){  // Message
+            printf("%s\n", decompressed_data);
+            char data[NAMESIZE + BUFFER_SIZE] = {0};
+            strcat(data, clients.clientData[i].name);
+            strcat(data, ": ");
+            strcat(data, decompressed_data + 1);
+            char compressed_data[NAMESIZE + BUFFER_SIZE];
+            compression_rle_compress(data, compressed_data);
             for(int j = 0; j < clients.last_client; j++)
               if(i != j && clients.clientData[j].socket_id > 0)
-                network_server_send(&(clients.clientData[j].socket_id), buffer, BUFFER_SIZE + NAMESIZE);
+                network_server_send(&(clients.clientData[j].socket_id), compressed_data, BUFFER_SIZE + NAMESIZE);
           
-          break;
+          }
+          else if(decompressed_data[0] == '3'){  // Private Message
+          
+          };
+        break;
         };
       };
     };

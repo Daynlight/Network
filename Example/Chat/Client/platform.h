@@ -90,8 +90,8 @@ void client_get_input(){
     };
 
     char buffer[NAMESIZE + BUFFER_SIZE] = {0};
-    strcat(buffer, name);
-    strcat(buffer, send_buffer);
+    buffer[0] ='2';
+    strcat(buffer + 1, send_buffer);
 
     if(network_check_if_empty_message(send_buffer) == NODATA)
       printf("Can't send empty message\n");
@@ -99,7 +99,7 @@ void client_get_input(){
       char compressed_data[NAMESIZE + BUFFER_SIZE];
       compression_rle_compress(buffer, compressed_data);
       network_client_send(&network, compressed_data, strlen(compressed_data));
-    }
+    };
 
     printf("> ");
     memset(send_buffer, 0, BUFFER_SIZE);
