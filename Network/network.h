@@ -88,7 +88,6 @@
 #define NETWORK_H
 
 
-#include "client_manger/client_manger.h"
 #include "compression/compression.h"
 
 

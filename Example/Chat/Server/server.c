@@ -1,11 +1,17 @@
 #include "server.h"
 
-#define PORT 9090
-#define BUFFER_SIZE 100
-#define NAMESIZE 25
+
+enum Operations{
+  Register = 1,         // 1\n<Name>
+  SendMessage = 2,      // 2\n<Message>
+  PrivateMessage = 3    // 3\n<User>\n<Message>
+};
+
+
 
 struct network_provider network = {0};
 struct clients clients = {0};
+struct clientData clientData = {0};
 char buffer[BUFFER_SIZE + NAMESIZE] = {0};
 int running = 1;
 
@@ -78,8 +84,8 @@ int main() {
     // broadcast
     for(int i = 0; i < clients.max_clients; i++){
       memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
-      if(clients.client_sock[i] > 0){
-        int valread = network_server_read(&clients.client_sock[i], buffer, BUFFER_SIZE + NAMESIZE);
+      if(clients.clientData[i].socket_id > 0){
+        int valread = network_server_read(&clients.clientData[i].socket_id, buffer, BUFFER_SIZE + NAMESIZE);
         char decompressed_data[BUFFER_SIZE + NAMESIZE];
         compression_rle_decompress(buffer, decompressed_data);
         switch(valread){
@@ -91,7 +97,10 @@ int main() {
           break;
         default:
           printf("%s\n", decompressed_data);
-          network_server_broadcast(&network, clients.client_sock, clients.max_clients, i, buffer, BUFFER_SIZE + NAMESIZE);
+            for(int j = 0; j < clients.last_client; j++)
+              if(i != j && clients.clientData[j].socket_id > 0)
+                network_server_send(&(clients.clientData[j].socket_id), buffer, BUFFER_SIZE + NAMESIZE);
+          
           break;
         };
       };

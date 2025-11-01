@@ -4,7 +4,6 @@ project(Network LANGUAGES C)
 
 set(src 
   network.c
-  client_manger/client_manger.c
   compression/compression.c
   encryption/encryption.c
 )

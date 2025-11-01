@@ -8,12 +8,20 @@
 #ifndef CLIENTMANAGER_H
 #define CLIENTMANAGER_H
 
-#include <stdlib.h>
+#include "../server.h"
 #include "network.h"
+
+#include <stdlib.h>
+
+
+struct clientData{
+  int socket_id;
+  char name[NAMESIZE];
+};
 
 
 struct clients{
-  int* client_sock;
+  struct clientData* clientData;
   unsigned int max_clients;
   unsigned int last_client;
 };

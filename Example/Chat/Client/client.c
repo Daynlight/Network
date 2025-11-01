@@ -7,6 +7,14 @@
 #define BUFFER_SIZE 100
 #define NAMESIZE 25
 
+
+enum Operations{
+  Register = 1,         // 1\n<Name>
+  SendMessage = 2,      // 2\n<Message>
+  PrivateMessage = 3    // 3\n<User>\n<Message>
+};
+
+
 struct network_provider network = {0};
 char send_buffer[BUFFER_SIZE] = {0};
 char read_buffer[BUFFER_SIZE + NAMESIZE] = {0};
@@ -17,6 +25,11 @@ int running = 1;
 #include "platform.h"
 
 
+enum Operations{
+  Register = 1,
+  SendMessage = 2,
+  PrivateMessage = 3
+};
 
 
 
