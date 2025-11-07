@@ -268,6 +268,7 @@ switch (network_client_connect(&network)){
     break;
   default:
     printf("Connected to server!\n");  
+    break;
 };
 ```
 
@@ -312,7 +313,8 @@ switch (network_client_connect(&network)){
 ```c
   char respond[BUFFER_SIZE] = {0};
   
-  network_client_send_request(&network, request, BUFFER_SIZE, respond, 20, 100)
+  network_client_send_request(&network, request, BUFFER_SIZE, respond, 20, 100);
+
   printf("%s\n", respond);
 ```
 
