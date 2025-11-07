@@ -18,7 +18,7 @@ COPY . .
 
 # Build the project with CMake
 RUN mkdir -p build && cd build
-RUN cmake -S . -B build && cmake --build build -j$(nproc)
+RUN cmake -S . -G Ninja -B build && cmake --build build -j$(nproc)
 
 # Expose port if your server listens (adjust as needed)
 EXPOSE 9090
