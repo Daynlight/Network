@@ -7,6 +7,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 
 add_subdirectory(Network)
+
 add_subdirectory(Example/Chat/Server)
 add_subdirectory(Example/Chat/Client)
 

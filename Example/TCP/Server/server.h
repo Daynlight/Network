@@ -5,7 +5,6 @@
 #include "../Macro.h"
 #include "network.h"
 #include "client_manger/client_manger.h"
-#include "requests.h"
 
 
 #include <signal.h>

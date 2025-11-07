@@ -1,8 +1,4 @@
 #include "client_manger.h"
-///////////////////// [NOTES] /////////////////////
-// [PLANED] hash map for fast look up for users
-// [PLANED] iterate via buckets and shift buckets on delete less operations
-
 
 
 void init_clients(struct clients *clients){

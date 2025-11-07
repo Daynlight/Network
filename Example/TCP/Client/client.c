@@ -45,13 +45,6 @@ int main(){
       printf("Connected to server!\n");  
   };
 
-  // show help command
-  help_command();
-
-  // register
-  char name[NAMESIZE] = {0};
-  client_register(&network, name);
-  printf("logged as %s\n", name);
 
   // set noblocking
 #ifndef WIN32
@@ -64,12 +57,13 @@ int main(){
     char request[BUFFER_SIZE + NAMESIZE] = {0};
     char respond[BUFFER_SIZE + NAMESIZE] = {0};
 
-    // requests
-    if(client_noblocking_get_input(request))  // read input
-      if(!client_commands(request, &running, name)) // client commands
-        send_request(&network, request);      // send to server
+    // send requests
+    if(client_noblocking_get_input(request)){
+      network_client_send(&network, request, BUFFER_SIZE + NAMESIZE);
+      printf("> ");
+    };
 
-    // operate responds
+    // get responds
     switch (network_client_read(&network, respond, BUFFER_SIZE + NAMESIZE)){
       case NODATA:
         break;
