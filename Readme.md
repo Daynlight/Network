@@ -1,6 +1,15 @@
 # Network
 ## About 
-It is simple internet interface for easier working with networking in c/c++. The library is written in c. Useful and lightweight. Core idea was assignment at university with networking. All functions operate in **no-blocking mode**. Includes a simple chat example with a server, allowing many users to chat with each other.
+It is simple internet interface for easier working with networking in c/c++. The library is written in c. Useful and lightweight. Core idea was assignment at university with networking. All functions operate in **non-blocking mode**. Includes a simple chat example with a server, allowing many users to chat with each other.
+
+
+<div align=center>
+
+![Tools](https://go-skill-icons.vercel.app/api/icons?i=c,cmake,docker,git,github,githubactions,windows,linux)
+
+<sub>Built with C · CMake · Docker · GitHub Actions · Cross-Platform</sub>
+
+</div>
 
 
 
@@ -8,11 +17,12 @@ It is simple internet interface for easier working with networking in c/c++. The
 - [About](#about)
 - [TOC](#toc)
 - [Screenshots](#screenshots)
+- [Supported Platforms](#supported-platforms)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Code Snippets](#code-snippets)
 - [Full Example](#full-example)
 - [Features](#features)
-- [TODO (Future Features)](#todo-future-features)
 - [License](#license)
 - [Prerequisites](#prerequisites)
 
@@ -39,13 +49,13 @@ It is simple internet interface for easier working with networking in c/c++. The
 | **Linux**  | ✅ Yes  |
 | **Windows**| ✅ Yes  |
 | **Android**| ❌ No   |
-| **MacOS**  | ❌ No   |
-| **IOS**    | ❌ No   |
+| **macOS**  | ❌ No   |
+| **iOS**    | ❌ No   |
 
 
 
 ## Installation
-### As Lib
+### As Library
 1. clone repository
 ```bash
   git clone https://github.com/Daynlight/Network.git
@@ -87,7 +97,7 @@ It is simple internet interface for easier working with networking in c/c++. The
 
 ## Usage
 ### Info and Recommend Usage
-- Server and Client works on **no-blocking sockets**. You need loop for receiving data.
+- Server and Client works on **non-blocking sockets**. You need loop for receiving data.
 
 - For **Video/Music etc.** data are send as **char buffer** and on client side are used in proper way.
 
@@ -95,7 +105,7 @@ It is simple internet interface for easier working with networking in c/c++. The
 
 - Good practice is to **optimize** buffer before sending it, **SIGINT handling**. Also good idea is **compression** and **encryption** [CCrypt](https://github.com/Daynlight/CCrypt).
 
-- After client connect it sets his socket to **no-blocking**
+- After client connect it sets his socket to **non-blocking**
 
 ### SIGINT handling
 ```c
@@ -170,7 +180,7 @@ void sigint_handler(int sig){
 
 
 
-## Code Snipset
+## Code Snippets
 ### Server
 #### network_server_init
 ```c
