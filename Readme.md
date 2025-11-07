@@ -1,7 +1,7 @@
 # Network
 ## About 
-It is simple internet function to work with sending data via network. It is written in C. Library is made for dynamic working it not waiting for read and send input between server and client.
-
+It is simple internet interface for easier working with networking in c/c++.
+Library is written in c. Useful and lightweight. Core idea was assignment at university with networking. All functions works on **no-blocking mode** Added simple chat.
 
 
 
@@ -57,6 +57,10 @@ It is simple internet function to work with sending data via network. It is writ
 ```
 2. compile via cmake
 ```bash
+  # you need to change address in Example/Macro.h
+  # in default it uses my google cloud server soo many 
+  # users can access it
+
   mkdir build
   cd build/
   cmake ..
@@ -69,116 +73,83 @@ It is simple internet function to work with sending data via network. It is writ
 ```bash
   ./../bin/Client
 ```
-5. (optional) run bash script to open server and two clients
-```bash
-  chmod +x ../.github/run_both.sh
-  ./../.github/run_both.sh
-```
 
 
 
 
 ## Usage
+### Info and Recommend Usage
+- Server and Client works on **no-blocking sockets**. You need loop for receiving data.
+
+- For **Video/Music etc.** data are sended as **char buffer** and on client side are used in proper way.
+
+- Best way to use it is making some custom format. for example make first **byte 255 or more** are always operations **register,login etc.** then you check this first byte and make operation based on this.
+
+- Good practice is to **optimize** buffer before sending it. Also good idea is **compression** and **encryption** [CCrypt](https://github.com/Daynlight/CCrypt).
+
+- After client connect it sets his socket to **no-blocking**
+
+
 ### Server
 #### Functions
-- ```network_server_init```
-- ```network_server_destroy```
-- ```network_server_listen```
-- ```network_server_find_free_socket```
-- ```network_server_read```
-- ```network_server_send```
-- ```network_server_broadcast```
+- ```network_server_init``` - initialize server
+- ```network_server_destroy``` - destroy server
+- ```network_server_listen``` - tcp listen for users connections
+- ```network_server_read``` - tcp read data from client
+- ```network_server_send``` - tcp send data to client
+- ```network_get_client_ip``` - get ip from socket
+- ```network_server_read_from```  - udp read data from client
+- ```network_server_send_to```  - tcp send data to client
 
-#### Example
-```c
-#include "server.h"
-
-#define PORT 9090
-#define BUFFER_SIZE 100
-
-struct network_server network = {0};
-char buffer[BUFFER_SIZE] = {0};
-int running = 1;
-
-if (network_server_init(&network, PORT) == ERROR)
-    exit(EXIT_FAILURE);
-
-while (running) {
-    if (network_server_listen(&network) == ERROR)
-        printf("Can't connect client!\n");
-    else
-        printf("Client connected\n");
-
-    for (int i = 0; i < MAX_CLIENTS; i++) {
-        if (network.client_sock[i] > 0) {
-            int valread = network_server_read(&network, i, buffer, BUFFER_SIZE);
-            if (valread > 0) {
-                printf("%s\n", buffer);
-                network_server_broadcast(&network, i, buffer, BUFFER_SIZE);
-            } else if (valread == DISCONNECT) {
-                close(network.client_sock[i]);
-                network.client_sock[i] = 0;
-                printf("Client disconnected\n");
-            }
-        }
-    }
-}
-
-network_server_destroy(&network);
-```
 
 ### Client
 #### Functions
-- ```network_client_init```
-- ```network_client_destroy```
-- ```network_client_connect```
-- ```network_client_read```
-- ```network_client_send```
+- ```network_client_init``` - initialize client
+- ```network_client_destroy```  - destroy client
+- ```network_client_connect```  - tcp connect client to server
+- ```network_client_read``` - tcp read data from server
+- ```network_client_send``` - tcp send data to server
+- ```network_client_read_from``` - udp read data from server  
+- ```network_client_send_to```  - udp send data to server
+- ```network_client_send_request``` - udp combination of send and read
 
-#### Example
-```c
-#include "client.h"
+### Server/Client
+- ```network_check_if_empty_message``` - check if message is not empty
 
-#define PORT 9090
-#define IP "127.0.0.1"
-#define BUFFER_SIZE 100
+### NetworkModes
+- ```TCP``` - tcp protocol
+- ```UDP``` - udp protocol
 
-struct network_client network = {0};
-char buffer[BUFFER_SIZE] = {0};
-int running = 1;
+### TCP Mode 
+- In tcp mode client and server creates connection via ```listen``` and ```connect```
+- ```listen``` returns user socket you should implement your own client manager
+- Data are exchanged via ```send``` and ```read``` functions for ```client``` and ```server```
+- You need specify maximal message size
+- If message is to long then send up to max size
 
-if (network_client_init(&network, IP, PORT) == ERROR)
-    printf("Can't init network\n");
+### UDP Mode
+- In udp mode client and server don't create connection so you don't use ```listen``` and ```connect```
+- You also don't need to create client manager
+- Data are exchanged via ```send_to``` and ```read_from```
+- For client You can run ```request``` that is combination of ```send_to``` and ```read_from```
+- For server when ```read_from``` You add reference to client and then when ```send_to``` use it
+- You need specify maximal message size
+- If message is to long then send up to max size
 
-if (network_client_connect(&network) == ERROR) {
-    printf("Can't connect to network!\n");
-    exit(EXIT_FAILURE);
-} else {
-    printf("Connected to server!\n");
-}
+### Network Provider
+- ```sock``` - socket id
+- ```serv_addr``` - sockaddr_in for server
+- ```mode``` - contains TCP/UDP mode used in socket
 
-while (running) {
-    // Send data
-    fgets(buffer, BUFFER_SIZE, stdin);
-    if (strcmp(buffer, "exit") == 0) {
-        running = 0;
-        break;
-    }
-
-    network_client_send(&network, buffer, BUFFER_SIZE);
-
-    // Receive data
-    int valread = network_client_read(&network, buffer, BUFFER_SIZE);
-    if (valread == DISCONNECT) {
-        printf("Server closed the connection.\n");
-        running = 0;
-    } else if (valread > 0) {
-        printf("Server: %s\n", buffer);
-    }
-}
-
-network_client_destroy(&network);
-```
+### NetworkCodes
+- ```NODATA``` - send or read no data
+- ```DISCONNECT``` - server or client is disconnecting
+- ```NOCLIENT``` - no client to connect
+- ```DNSERROR``` - can't find domain
+- ```SOCKETERROR``` - can't create socket
+- ```CONNECTERROR```  can't connect to server
+- ```ERRORCODE``` - error when function called
+- ```SUCCESS``` - function end up with success
 
 
 
@@ -186,153 +157,12 @@ network_client_destroy(&network);
 ## Full Example
 ### Server
 ```c
-#include "server.h"
 
-#define PORT 9090
-#define BUFFER_SIZE 100
-#define NAMESIZE 25
-
-struct network_server network = {0};
-char buffer[BUFFER_SIZE + NAMESIZE] = {0};
-int running = 1;
-
-
-void sigint_handler(int sig) {
-    network_server_destroy(&network);
-    running = 0;
-    exit(EXIT_FAILURE);
-};
-
-
-int main() {
-    signal(SIGINT, sigint_handler);
-
-    printf("Server is running\n");
-
-    if(network_server_init(&network, PORT) == ERROR)
-        exit(EXIT_FAILURE);
-
-    
-    while (running) {
-        // connect 
-        enum NetworkCodes err = network_server_listen(&network);
-        if(err == ERROR)
-            printf("Cant connect client!\n");
-        else if(err == SUCCESS)
-            printf("Client connected\n");
-
-        // broadcast
-        for(int i = 0; i < MAX_CLIENTS; i++){
-            memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
-            if(network.client_sock[i] > 0){
-                int valread = network_server_read(&network, i, buffer,  BUFFER_SIZE + NAMESIZE);
-                if(valread > 0){
-                    printf("%s\n", buffer);
-                    network_server_broadcast(&network, i, buffer, BUFFER_SIZE + NAMESIZE);
-                }
-                else if(valread == DISCONNECT){
-                    close(network.client_sock[i]);
-                    network.client_sock[i] = 0;
-                    printf("Client disconnected\n");
-                };
-            };
-        };
-    };
-
-    network_server_destroy(&network);
-
-    return 0;
-}
 ```
 
 ### Client
 ```c
-#include "client.h"
 
-#define PORT 9090
-#define IP "127.0.0.1"
-
-#define BUFFER_SIZE 100
-#define NAMESIZE 25
-
-struct network_client network = {0};
-char send_buffer[BUFFER_SIZE] = {0};
-char read_buffer[BUFFER_SIZE + NAMESIZE] = {0};
-char name[NAMESIZE] = {0};
-int running = 1;
-
-
-void sigint_handler(int sig){
-    network_client_destroy(&network);
-    running = 0;
-    exit(EXIT_FAILURE);
-};
-
-
-int main(){
-    signal(SIGINT, sigint_handler);
-
-    if(network_client_init(&network, IP, PORT) == ERROR)
-        printf("Can't init network\n");
-
-    if(network_client_connect(&network) == ERROR){
-        printf("Can't connect to network!\n");
-        exit(EXIT_FAILURE);
-    }
-    else
-        printf("Connected to server!\n");
-
-    printf("name: ");
-    fgets(name, NAMESIZE -1, stdin);
-    name[strcspn(name, "\n")] = ':';
-    strcat(name, " ");
-    printf("logged as %s\n", name);
-
-    fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
-    
-
-
-
-    printf("> ");
-    while (running) {
-        if(fgets(send_buffer, BUFFER_SIZE, stdin) != NULL){
-            send_buffer[strcspn(send_buffer, "\n")] = 0;
-
-            if(strcmp(send_buffer, "exit") == 0){
-                running = 0;
-                break;
-            };
-
-            printf("> ");
-
-            char buffer[NAMESIZE + BUFFER_SIZE] = {0};
-            strcat(buffer, name);
-            strcat(buffer, send_buffer);
-
-            network_client_send(&network, buffer, NAMESIZE + BUFFER_SIZE);
-            
-            memset(buffer, 0, BUFFER_SIZE + NAMESIZE);
-            memset(send_buffer, 0, BUFFER_SIZE);
-        }
-        else{
-            int valread = network_client_read(&network, read_buffer, BUFFER_SIZE + NAMESIZE);
-            if (valread == DISCONNECT) {
-                printf("\nServer closed the connection.\n");
-                running = 0;
-            }
-            else if(valread > 0){
-                printf("%s\n", read_buffer);
-                printf("> ");
-                memset(read_buffer, 0, BUFFER_SIZE + NAMESIZE);
-            };
-        };
-    };
-    
-
-
-    network_client_destroy(&network);
-    return 0;
-};
 ```
 
 
@@ -342,7 +172,7 @@ int main(){
 ## Features
 - **Non-blocking I/O**: No need to wait for data to be read or sent; the program can continue executing while awaiting network events.
 - **Multiple Client Handling**: The server can handle multiple client connections simultaneously.
-- **Supports Broadcast**: The server can broadcast messages to all connected clients.
+- **Protocols**: TCP and UDP protocol
 - **Cross-Platform**: Window and Linux supported.
 
 

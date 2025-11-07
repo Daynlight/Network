@@ -64,23 +64,15 @@
 // SOCKETERROR  can't create socket
 // CONNECTERROR can't connect to server
 // ERRORCODE    error when function called
-// SUCCESS      fuction end up with success
+// SUCCESS      function end up with success
 
-
-
-//////////////////////////////////////////////////////////////////
-///////////////////////// Planed Features ////////////////////////
-//////////////////////////////////////////////////////////////////
-// TCP/UDP protocols                (set in server and in client automatically getted from server on connect if possible)
-// Better error checking
-// Highly optimized client system   (no verdict because it is highly dependent from server implementation if it would be c++ I would use templates but it is c :<)
-// Buffer to way encryption x25519  (functions that generate buffer from buffer but encrypted/decrypted)
 
 
 //////////////////////////////////////////////////////////////////
 //////////////////////////// Features ////////////////////////////
 //////////////////////////////////////////////////////////////////
 // Buffer compression/decompression RLE
+// TCP/UDP protocols
 
 
 
