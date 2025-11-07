@@ -11,7 +11,7 @@ on:
   push:
     branches: [ "release" ]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: [ 'v*.*.*', 'latest' ]
   pull_request:
     branches: [ "release" ]
 
