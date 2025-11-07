@@ -22,10 +22,11 @@ int main() {
   signal(SIGINT, sigint_handler);
 
   // Init server
-  switch (network_server_init(&network, PORT)){
+  switch (network_server_init(&network, TCP, PORT)){
     case ERRORCODE:
-      printf("Can't Initialize Server");
+      printf("Can't Initialize Server\n");
       network_server_destroy(&network);
+      perror("error");
       exit(EXIT_FAILURE);
       break;
     default: 

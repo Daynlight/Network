@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_provider* network_provider, const char* addr, int port) {
+enum NetworkCodes network_client_init(struct network_provider* network_provider, enum NetworkModes mode, const char* addr, int port) {
 #ifdef WIN32
   WSADATA wsaData;
   int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -15,7 +15,12 @@ enum NetworkCodes network_client_init(struct network_provider* network_provider,
   
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_INET;
-  hints.ai_socktype = SOCK_STREAM;
+  if(mode == TCP)
+    hints.ai_socktype = SOCK_STREAM;
+  else 
+    hints.ai_socktype = SOCK_DGRAM;
+
+  network_provider->mode = mode;
 
   if (getaddrinfo(addr, NULL, &hints, &res) != 0){
     freeaddrinfo(res);
@@ -137,10 +142,53 @@ enum NetworkCodes network_client_send(struct network_provider *network_provider,
     send(network_provider->sock, buffer, strlen(buffer), 0);
     
   return SUCCESS;
+}
+
+
+
+int network_client_read_from(struct network_provider *network_provider, char *buffer, const unsigned int buffer_size){
+  struct sockaddr_in address = network_provider->serv_addr;
+  socklen_t addr_len = sizeof(struct sockaddr_in);
+  
+  int val = recvfrom(network_provider->sock, buffer, buffer_size, 0,
+                    (struct sockaddr*)&address, &addr_len);
+  if(val < 0){
+    if(errno == EAGAIN || errno == EWOULDBLOCK)
+      return NODATA;
+    else
+      return ERRORCODE;
+  };
+
+  if(val == 0)
+    return DISCONNECT;
+
+  return val;
 };
 
 
 
+
+
+enum NetworkCodes network_client_send_to(struct network_provider *network_provider, char *buffer, const unsigned int max_message_size){
+  if (!network_provider || !buffer || strlen(buffer) == 0)
+    return NODATA;
+
+  struct sockaddr_in *dest = &network_provider->serv_addr;
+  socklen_t addr_len = sizeof(struct sockaddr_in);
+
+  int sent = 0;
+  if(strlen(buffer) > max_message_size)
+    sent = sendto(network_provider->sock, buffer, max_message_size, 0, (struct sockaddr*)dest, addr_len);
+  else
+    sent = sendto(network_provider->sock, buffer, strlen(buffer), 0, (struct sockaddr*)dest, addr_len);
+  
+
+  if (sent < 0) {
+    return ERRORCODE;
+  };
+
+  return SUCCESS;
+};
 
 
 
@@ -148,7 +196,7 @@ enum NetworkCodes network_client_send(struct network_provider *network_provider,
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Server /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_server_init(struct network_provider *network_provider, const unsigned int port){
+enum NetworkCodes network_server_init(struct network_provider *network_provider, enum NetworkModes mode, const unsigned int port){
 #ifdef WIN32
   WSADATA wsaData;
   int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -157,8 +205,15 @@ enum NetworkCodes network_server_init(struct network_provider *network_provider,
   int opt = 1;
   int addrlen = sizeof(network_provider->serv_addr);
 
-  if ((network_provider->sock = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+  if(mode == UDP)
+    network_provider->sock = socket(AF_INET, SOCK_DGRAM, 0);
+  else
+    network_provider->sock = socket(AF_INET, SOCK_STREAM, 0);
+    
+  if(network_provider->sock <= 0)
     return ERRORCODE;
+
+  network_provider->mode = mode;
 
 #ifdef WIN32
   if (setsockopt(network_provider->sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt)))
@@ -294,6 +349,48 @@ enum NetworkCodes network_get_client_ip(int* socket, char *buffer){
 };
 
 
+
+
+int network_server_read_from(struct network_provider *network_provider, struct sockaddr *address, char *buffer, const unsigned int buffer_size){
+  socklen_t addr_len = sizeof(struct sockaddr_in);
+  int val = recvfrom(network_provider->sock, buffer, buffer_size, 0,
+                    address, &addr_len);
+  if(val < 0){
+    if(errno == EAGAIN || errno == EWOULDBLOCK)
+      return NODATA;
+    else
+      return ERRORCODE;
+  };
+
+  if(val == 0)
+    return DISCONNECT;
+
+  return val;
+};
+
+
+
+
+
+enum NetworkCodes network_server_send_to(struct network_provider *network_provider, struct sockaddr *dest, char *buffer, const unsigned int max_message_size){
+  if (!network_provider || !buffer || strlen(buffer) == 0)
+    return NODATA;
+
+  socklen_t addr_len = sizeof(struct sockaddr_in);
+
+  int sent = 0;
+  if(strlen(buffer) > max_message_size)
+    sent = sendto(network_provider->sock, buffer, max_message_size, 0, dest, addr_len);
+  else
+    sent = sendto(network_provider->sock, buffer, strlen(buffer), 0, dest, addr_len);
+  
+
+  if (sent < 0) {
+    return ERRORCODE;
+  };
+
+  return SUCCESS;
+};
 
 
 
