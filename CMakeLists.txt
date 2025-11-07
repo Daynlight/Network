@@ -8,18 +8,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 add_subdirectory(Network)
 
-add_subdirectory(Example/Chat/Server)
-add_subdirectory(Example/Chat/Client)
+add_subdirectory(Examples/Chat/Server)
+add_subdirectory(Examples/Chat/Client)
 
-add_subdirectory(Example/UDP/Server)
-add_subdirectory(Example/UDP/Client)
+add_subdirectory(Examples/UDP/Server)
+add_subdirectory(Examples/UDP/Client)
 
-add_subdirectory(Example/TCP/Server)
-add_subdirectory(Example/TCP/Client)
-
-
-
-add_custom_target(RUN_ALL
-  COMMAND bash ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../.github/run_both.sh
-  DEPENDS Server Client
-)
+add_subdirectory(Examples/TCP/Server)
+add_subdirectory(Examples/TCP/Client)

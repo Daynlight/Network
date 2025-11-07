@@ -338,12 +338,13 @@ switch (network_client_connect(&network)){
 
 
 
+## Small Example
+- [TCP Example](Examples/TCP/)
+- [UDP Example](Examples/UDP/)
+
 
 ## Full Example
 - [Chat Example](Example/Chat/)
-- [UDP Example](Example/UDP/)
-
-
 
 
 
