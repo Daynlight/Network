@@ -26,6 +26,7 @@ int main() {
     case ERRORCODE:
       printf("Can't Initialize Server");
       network_server_destroy(&network);
+      perror("error: ");
       exit(EXIT_FAILURE);
       break;
     default: 
