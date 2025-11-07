@@ -89,7 +89,8 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/chat:${{ env.TAG }}
+          tags: |
+                ${{ env.REGISTRY }}/${{ env.OWNER }}/chat:${{ env.TAG }}
                 ${{ env.REGISTRY }}/${{ env.OWNER }}/chat:latest
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
