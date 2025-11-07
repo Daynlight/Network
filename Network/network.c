@@ -163,11 +163,12 @@ enum NetworkCodes network_server_init(struct network_provider *network_provider,
   int addrlen = sizeof(network_provider->serv_addr);
 
   if(mode == UDP)
-    if ((network_provider->sock = socket(AF_INET, SOCK_DGRAM, 0)) <= 0)
-      return ERRORCODE;
+    network_provider->sock = socket(AF_INET, SOCK_DGRAM, 0);
   else
-    if ((network_provider->sock = socket(AF_INET, SOCK_STREAM, 0)) <= 0)
-      return ERRORCODE;
+    network_provider->sock = socket(AF_INET, SOCK_STREAM, 0);
+    
+  if(network_provider->sock <= 0)
+    return ERRORCODE;
 
   network_provider->mode = mode;
 
