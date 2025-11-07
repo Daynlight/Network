@@ -46,9 +46,7 @@ void client_register(struct network_provider* network, char *name){
   strcat(namebuffer, name);
 
   // compress name
-  char compressed_name[NAMESIZE + BUFFER_SIZE];
-  compression_rle_compress(namebuffer, compressed_name);
-  network_client_send(network, compressed_name, NAMESIZE + BUFFER_SIZE);    // Register
+  network_client_send(network, namebuffer, NAMESIZE + BUFFER_SIZE);    // Register
 };
 
 
@@ -92,12 +90,8 @@ void send_request(struct network_provider *network, char *request){
     strcat(send_request + 1, request);
   }
     
-  // compress request
-  char compressed_request[NAMESIZE + BUFFER_SIZE];
-  compression_rle_compress(send_request, compressed_request);
-
   // send request
-  network_client_send(network, compressed_request, strlen(compressed_request));
+  network_client_send(network, send_request, NAMESIZE + BUFFER_SIZE);
   
   // new request pointer
   printf("> ");

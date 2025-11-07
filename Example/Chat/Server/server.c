@@ -50,8 +50,6 @@ int main() {
 
         // read requests
         int valread = network_server_read(&clients.clientData[i].socket_id, buffer, BUFFER_SIZE + NAMESIZE);
-        char decompressed_request[BUFFER_SIZE + NAMESIZE];
-        compression_rle_decompress(buffer, decompressed_request);
       
         // respond to request
         switch(valread){
@@ -61,7 +59,7 @@ int main() {
           case NODATA:
             break;
           default:
-            respond(decompressed_request, &clients, i);
+            respond(buffer, &clients, i);
           break;
         };
 

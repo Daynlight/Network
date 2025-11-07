@@ -4,8 +4,6 @@ project(Network LANGUAGES C)
 
 set(src 
   network.c
-  compression/compression.c
-  encryption/encryption.c
 )
 
 add_library(Network ${src})

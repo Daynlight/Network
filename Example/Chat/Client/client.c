@@ -81,9 +81,7 @@ int main(){
         printf("Error on read!\n");
         break;
       default: 
-        char decompressed_respond[BUFFER_SIZE + NAMESIZE];
-        compression_rle_decompress(respond, decompressed_respond);
-        printf("%s\n> ", decompressed_respond);
+        printf("%s\n> ", respond);
         break;
     };
 

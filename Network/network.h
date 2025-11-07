@@ -80,8 +80,6 @@
 #define NETWORK_H
 
 
-#include "compression/compression.h"
-
 
 #ifdef WIN32
   #include <winsock2.h>

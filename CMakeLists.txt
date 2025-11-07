@@ -13,8 +13,6 @@ add_subdirectory(Example/Chat/Client)
 add_subdirectory(Example/UDP/Server)
 add_subdirectory(Example/UDP/Client)
 
-add_subdirectory(Tests/UnitTests)
-
 
 
 add_custom_target(RUN_ALL

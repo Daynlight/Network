@@ -4,7 +4,6 @@
 
 #include "../../Macro.h"
 #include "network.h"
-#include "compression/compression.h"
 
 #include <signal.h>
 

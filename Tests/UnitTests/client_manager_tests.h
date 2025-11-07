@@ -1,7 +1,0 @@
-#ifndef CLIENT_MANAGER_TESTS_H
-#define CLIENT_MANAGER_TESTS_H
-
-
-
-
-#endif
