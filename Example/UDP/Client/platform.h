@@ -40,7 +40,7 @@ void client_noblocking_get_input(){
         return;
       };
 
-      char buffer[NAMESIZE + BUFFER_SIZE] = {0};
+      char buffer[BUFFER_SIZE] = {0};
       strcat(buffer, name);
       strcat(buffer, send_buffer);
 

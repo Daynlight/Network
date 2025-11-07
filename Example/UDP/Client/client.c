@@ -43,9 +43,11 @@ int main(){
   while (running) {
     char request[BUFFER_SIZE] = {0};
     
+
     // get request
     if(client_noblocking_get_input(request)){
       char respond[BUFFER_SIZE] = {0};
+
       // send request
       switch(network_client_send_request(&network, request, BUFFER_SIZE, respond, 20, 100)){
         case ERRORCODE:
