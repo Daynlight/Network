@@ -108,12 +108,6 @@
 
 
 
-struct network_provider{
-  int sock;
-  struct sockaddr_in serv_addr;
-};
-
-
 
 ///////////////////////////////////////////////////////////////////
 ////////////////////////////// Codes //////////////////////////////
@@ -139,6 +133,13 @@ enum NetworkModes{
 
 
 
+struct network_provider{
+  int sock;
+  struct sockaddr_in serv_addr;
+  enum NetworkModes mode;
+};
+
+
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
@@ -155,7 +156,7 @@ int network_client_send_request();
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Server /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_server_init(struct network_provider* network_provider, const unsigned int mode, const unsigned int port);
+enum NetworkCodes network_server_init(struct network_provider* network_provider, enum NetworkModes mode, const unsigned int port);
 enum NetworkCodes network_server_destroy(struct network_provider* network_provider);
 int network_server_listen(struct network_provider* network_provider);
 int network_server_read(int* socket, char *buffer, const unsigned int buffer_size);

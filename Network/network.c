@@ -28,6 +28,10 @@ enum NetworkCodes network_client_init(struct network_provider* network_provider,
     return SOCKETERROR;
   };
 
+  network_provider->mode = 0;
+  if(res->ai_socktype == SOCK_DGRAM)
+    network_provider->mode = 1;
+
   network_provider->serv_addr = *(struct sockaddr_in*)res->ai_addr;
   network_provider->serv_addr.sin_port = htons(port);
 
@@ -148,7 +152,7 @@ enum NetworkCodes network_client_send(struct network_provider *network_provider,
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Server /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_server_init(struct network_provider *network_provider, const unsigned int mode, const unsigned int port){
+enum NetworkCodes network_server_init(struct network_provider *network_provider, enum NetworkModes mode, const unsigned int port){
 #ifdef WIN32
   WSADATA wsaData;
   int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
