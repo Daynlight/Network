@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     cmake \
     git \
     bash \
+    ninja-build \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory inside container
