@@ -28,9 +28,10 @@ enum NetworkCodes network_client_init(struct network_provider* network_provider,
     return SOCKETERROR;
   };
 
-  network_provider->mode = 0;
   if(res->ai_socktype == SOCK_DGRAM)
     network_provider->mode = 1;
+  else
+    network_provider->mode = 0;
 
   network_provider->serv_addr = *(struct sockaddr_in*)res->ai_addr;
   network_provider->serv_addr.sin_port = htons(port);
@@ -161,8 +162,14 @@ enum NetworkCodes network_server_init(struct network_provider *network_provider,
   int opt = 1;
   int addrlen = sizeof(network_provider->serv_addr);
 
-  if ((network_provider->sock = socket(AF_INET, SOCK_STREAM, 0)) == 0)
-    return ERRORCODE;
+  if(mode == UDP)
+    if ((network_provider->sock = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+      return ERRORCODE;
+  else
+    if ((network_provider->sock = socket(AF_INET, SOCK_DGRAM, 0)) == 0)
+      return ERRORCODE;
+
+  network_provider->mode = mode;
 
 #ifdef WIN32
   if (setsockopt(network_provider->sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, sizeof(opt)))
