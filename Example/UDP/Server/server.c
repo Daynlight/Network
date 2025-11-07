@@ -33,7 +33,7 @@ int main() {
   };
 
   while (running) {
-    struct sockaddr_in client_socket = {0};
+    struct sockaddr client_socket = {0};
     char request[BUFFER_SIZE] = {0};
 
     // get request
@@ -42,10 +42,14 @@ int main() {
     // respond
     if(val >= SUCCESS){
       // generate respond
-      printf("user request: %s\n", request);
-
+      char respond[BUFFER_SIZE] = "received: ";
+      strcat(respond, request);
+      
       // send respond
-
+      network_server_send_to(&network, &client_socket, respond, BUFFER_SIZE);
+      
+      // print request
+      printf("user request: %s\n", request);
     };
 
     sleep(0.05);

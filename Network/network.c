@@ -146,6 +146,28 @@ enum NetworkCodes network_client_send(struct network_provider *network_provider,
 
 
 
+int network_client_read_from(struct network_provider *network_provider, char *buffer, const unsigned int buffer_size){
+  struct sockaddr_in address = network_provider->serv_addr;
+  socklen_t addr_len = sizeof(struct sockaddr_in);
+  
+  int val = recvfrom(network_provider->sock, buffer, buffer_size, 0,
+                    (struct sockaddr*)&address, &addr_len);
+  if(val < 0){
+    if(errno == EAGAIN || errno == EWOULDBLOCK)
+      return NODATA;
+    else
+      return ERRORCODE;
+  };
+
+  if(val == 0)
+    return DISCONNECT;
+
+  return val;
+};
+
+
+
+
 
 enum NetworkCodes network_client_send_to(struct network_provider *network_provider, char *buffer, const unsigned int max_message_size){
   if (!network_provider || !buffer || strlen(buffer) == 0)
@@ -329,10 +351,10 @@ enum NetworkCodes network_get_client_ip(int* socket, char *buffer){
 
 
 
-int network_server_read_from(struct network_provider *network_provider, struct sockaddr_in *address, char *buffer, const unsigned int buffer_size){
-  socklen_t addr_len = sizeof(address);
+int network_server_read_from(struct network_provider *network_provider, struct sockaddr *address, char *buffer, const unsigned int buffer_size){
+  socklen_t addr_len = sizeof(struct sockaddr_in);
   int val = recvfrom(network_provider->sock, buffer, buffer_size, 0,
-                    (struct sockaddr*)&address, &addr_len);
+                    address, &addr_len);
   if(val < 0){
     if(errno == EAGAIN || errno == EWOULDBLOCK)
       return NODATA;
@@ -344,6 +366,30 @@ int network_server_read_from(struct network_provider *network_provider, struct s
     return DISCONNECT;
 
   return val;
+};
+
+
+
+
+
+enum NetworkCodes network_server_send_to(struct network_provider *network_provider, struct sockaddr *dest, char *buffer, const unsigned int max_message_size){
+  if (!network_provider || !buffer || strlen(buffer) == 0)
+    return NODATA;
+
+  socklen_t addr_len = sizeof(struct sockaddr_in);
+
+  int sent = 0;
+  if(strlen(buffer) > max_message_size)
+    sent = sendto(network_provider->sock, buffer, max_message_size, 0, dest, addr_len);
+  else
+    sent = sendto(network_provider->sock, buffer, strlen(buffer), 0, dest, addr_len);
+  
+
+  if (sent < 0) {
+    return ERRORCODE;
+  };
+
+  return SUCCESS;
 };
 
 

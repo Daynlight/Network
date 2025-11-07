@@ -48,11 +48,16 @@ int main(){
       // send request
       if(network_client_send_to(&network, request, BUFFER_SIZE) == SUCCESS){
         // get respond
+        char respond[BUFFER_SIZE] = {0};
+        while (network_client_read_from(&network, respond, BUFFER_SIZE) == NODATA) {
+          sleep(0.05);
+        };
 
         // print respond
+        printf("respond: %s", respond);
       };
       
-      printf("\n>");
+      printf("\n> ");
     }
     sleep(0.05);
   };
