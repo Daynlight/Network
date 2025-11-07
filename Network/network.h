@@ -148,7 +148,7 @@ enum NetworkCodes network_client_destroy(struct network_provider* network_provid
 enum NetworkCodes network_client_connect(struct network_provider* network_provider);
 int network_client_read(struct network_provider* network_provider, char* buffer, const unsigned int buffer_size);
 enum NetworkCodes network_client_send(struct network_provider* network_provider, char* buffer, const unsigned int max_message_size);
-int network_client_read_from();
+int network_client_read_from(struct network_provider* network_provider, struct sockaddr_in *address, char* buffer, const unsigned int buffer_size);
 enum NetworkCodes network_client_send_to();
 int network_client_send_request();
 
@@ -162,7 +162,7 @@ int network_server_listen(struct network_provider* network_provider);
 int network_server_read(int* socket, char *buffer, const unsigned int buffer_size);
 enum NetworkCodes network_server_send(int* socket, char *buffer, const unsigned int max_message_size);
 enum NetworkCodes network_get_client_ip(int* socket, char *buffer); 
-int network_server_read_from();
+int network_server_read_from(struct network_provider* network_provider, struct sockaddr_in *address, char* buffer, const unsigned int buffer_size);
 enum NetworkCodes network_server_send_to();
 
 

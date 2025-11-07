@@ -142,10 +142,7 @@ enum NetworkCodes network_client_send(struct network_provider *network_provider,
     send(network_provider->sock, buffer, strlen(buffer), 0);
     
   return SUCCESS;
-};
-
-
-
+}
 
 
 
@@ -306,6 +303,24 @@ enum NetworkCodes network_get_client_ip(int* socket, char *buffer){
 };
 
 
+
+
+int network_server_read_from(struct network_provider *network_provider, struct sockaddr_in *address, char *buffer, const unsigned int buffer_size){
+  socklen_t addr_len = sizeof(address);
+  int val = recvfrom(network_provider->sock, buffer, buffer_size, 0,
+                    (struct sockaddr*)&address, &addr_len);
+  if(val < 0){
+    if(errno == EAGAIN || errno == EWOULDBLOCK)
+      return NODATA;
+    else
+      return ERRORCODE;
+  };
+
+  if(val == 0)
+    return DISCONNECT;
+
+  return val;
+};
 
 
 

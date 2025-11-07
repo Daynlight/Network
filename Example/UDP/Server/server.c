@@ -33,17 +33,19 @@ int main() {
   };
 
   while (running) {
-    int client_socket = 0;
+    struct sockaddr_in client_socket = {0};
     char request[BUFFER_SIZE] = {0};
 
     // get request
+    int val = network_server_read_from(&network, &client_socket, request, BUFFER_SIZE);
 
     // respond
-    if(client_socket){
+    if(val == SUCCESS){
       // generate respond
+      printf("user request: %s\n", request);
 
       // send respond
-      
+
     };
 
     sleep(0.05);
