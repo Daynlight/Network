@@ -170,6 +170,187 @@ void sigint_handler(int sig){
 
 
 
+## Code Snipset
+### Server
+#### network_server_init
+```c
+  switch (network_server_init(&network, UDP, PORT)){
+    case ERRORCODE:
+      printf("Can't Initialize Server\n");
+      network_server_destroy(&network);
+      exit(EXIT_FAILURE);
+      break;
+    default: 
+      printf("Server Initialized\n");
+      printf("Server is running\n");
+      break;
+  };
+```
+
+#### network_server_destroy
+```c
+  network_server_destroy(&network);
+```
+
+#### network_server_listen
+```c
+  int socket = network_server_listen(network); 
+```
+
+#### network_server_read
+```c
+  char buffer[BUFFER_SIZE + NAMESIZE] = {0};
+  int valread = network_server_read(&clients.clientData[i].socket_id, buffer, BUFFER_SIZE + NAMESIZE);
+
+  // respond to request
+  switch(valread){
+    case DISCONNECT:
+      disconnect_user(&clients, i);
+      break;
+    case NODATA:
+      break;
+    default:
+      respond(buffer, &clients, i);
+  break;
+  };
+```
+
+#### network_server_send
+```c
+  char message[NAMESIZE + BUFFER_SIZE] = "message";
+  network_server_send(&(clients->clientData[j].socket_id), message, BUFFER_SIZE + NAMESIZE);
+```
+
+#### network_get_client_ip
+```c
+  char ip[INET_ADDRSTRLEN];
+  network_get_client_ip(&socket, ip);
+```
+
+#### network_server_read_from
+```c
+  struct sockaddr client_socket = {0};
+  char request[BUFFER_SIZE] = {0};
+
+  int val = network_server_read_from(&network, &client_socket, request, BUFFER_SIZE);
+```
+
+#### network_server_send_to
+```c
+  char respond[BUFFER_SIZE] = "respond";
+  network_server_send_to(&network, &client_socket, respond, BUFFER_SIZE);
+```
+
+
+### Client
+#### network_client_init
+```c
+  switch (network_client_init(&network, UDP, ADDR, PORT)){
+    case CONNECTERROR:
+      printf("Can't init network\n");
+      exit(EXIT_FAILURE);
+      break;
+    case DNSERROR:
+      printf("Can't find ip from dns!\n");
+      exit(EXIT_FAILURE);
+      break;
+    default: 
+      printf("Client initalized!\n");
+      break;
+  };
+```
+
+#### network_client_destroy
+```c
+  network_client_destroy(&network);
+```
+
+#### network_client_connect
+```c
+switch (network_client_connect(&network)){
+  case CONNECTERROR:
+    printf("Can't connect to network!\n");
+    network_client_destroy(&network);
+    printf("Network destroyed!\n");
+    exit(EXIT_FAILURE);
+    break;
+  default:
+    printf("Connected to server!\n");  
+};
+```
+
+#### network_client_read
+```c
+  char respond[BUFFER_SIZE + NAMESIZE] = {0};
+
+  switch (network_client_read(&network, respond, BUFFER_SIZE + NAMESIZE)){
+    case NODATA:
+      break;
+    case DISCONNECT:
+      printf("\nServer closed the connection.\n");
+      running = 0;
+      break;
+    case ERRORCODE:
+      printf("Error on read!\n");
+      break;
+    default: 
+      printf("%s\n> ", respond);
+      break;
+  };
+```
+
+#### network_client_send
+```c
+  char send_request[NAMESIZE + BUFFER_SIZE] = "request";
+  network_client_send(network, send_request, NAMESIZE + BUFFER_SIZE);
+```
+
+#### network_client_read_from
+```c
+  char respond[NAMESIZE + BUFFER_SIZE] = {0};
+  int val = network_client_read_from(network_provider, respond, NAMESIZE + BUFFER_SIZE);
+    
+  for(unsigned int i = 0; i < 100; i++) {
+    if(val == NODATA) {
+      sleep(1/20);
+      val = network_client_read_from(network_provider, respond, NAMESIZE + BUFFER_SIZE);
+    };
+  };
+
+  printf("%s\n", respond);
+```
+
+#### network_client_send_to
+```c
+  char request[NAMESIZE + BUFFER_SIZE] = "request";
+  if(network_client_send_to(network_provider, request, NAMESIZE + BUFFER_SIZE) == ERRORCODE) printf("Error on send_to!\n");
+```
+
+#### network_client_send_request
+```c
+  char respond[BUFFER_SIZE] = {0};
+  // send request
+  switch(network_client_send_request(&network, request, BUFFER_SIZE, respond, 20, 100)){
+    case ERRORCODE:
+      printf("Can't get respond\n");
+      break;
+    default:
+      printf("%s\n", respond);
+      break;
+  }
+```
+
+### Server/Client
+#### network_check_if_empty_message
+```c
+  if(network_check_if_empty_message(request) == NODATA){
+    printf("Can't send empty message\n");
+    return;
+  };
+```
+
+
+
 
 ## Full Example
 - [Chat Example](Example/Chat/)

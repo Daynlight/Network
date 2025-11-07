@@ -203,8 +203,8 @@ int network_client_send_request(struct network_provider *network_provider, char 
     
     for(unsigned int i = 0; i < max_tries; i++) 
       if(val == NODATA) {
-        val = network_client_read_from(network_provider, respond, max_message_size);
         sleep(1/refresh_rate);
+        val = network_client_read_from(network_provider, respond, max_message_size);
       }
       else
         break;
