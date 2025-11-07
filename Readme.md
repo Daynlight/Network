@@ -201,18 +201,6 @@ void sigint_handler(int sig){
 ```c
   char buffer[BUFFER_SIZE + NAMESIZE] = {0};
   int valread = network_server_read(&clients.clientData[i].socket_id, buffer, BUFFER_SIZE + NAMESIZE);
-
-  // respond to request
-  switch(valread){
-    case DISCONNECT:
-      disconnect_user(&clients, i);
-      break;
-    case NODATA:
-      break;
-    default:
-      respond(buffer, &clients, i);
-  break;
-  };
 ```
 
 #### network_server_send
@@ -283,20 +271,7 @@ switch (network_client_connect(&network)){
 ```c
   char respond[BUFFER_SIZE + NAMESIZE] = {0};
 
-  switch (network_client_read(&network, respond, BUFFER_SIZE + NAMESIZE)){
-    case NODATA:
-      break;
-    case DISCONNECT:
-      printf("\nServer closed the connection.\n");
-      running = 0;
-      break;
-    case ERRORCODE:
-      printf("Error on read!\n");
-      break;
-    default: 
-      printf("%s\n> ", respond);
-      break;
-  };
+  network_client_read(&network, respond, BUFFER_SIZE + NAMESIZE)
 ```
 
 #### network_client_send
@@ -323,21 +298,16 @@ switch (network_client_connect(&network)){
 #### network_client_send_to
 ```c
   char request[NAMESIZE + BUFFER_SIZE] = "request";
-  if(network_client_send_to(network_provider, request, NAMESIZE + BUFFER_SIZE) == ERRORCODE) printf("Error on send_to!\n");
+  
+  network_client_send_to(network_provider, request, NAMESIZE + BUFFER_SIZE)
 ```
 
 #### network_client_send_request
 ```c
   char respond[BUFFER_SIZE] = {0};
-  // send request
-  switch(network_client_send_request(&network, request, BUFFER_SIZE, respond, 20, 100)){
-    case ERRORCODE:
-      printf("Can't get respond\n");
-      break;
-    default:
-      printf("%s\n", respond);
-      break;
-  }
+  
+  network_client_send_request(&network, request, BUFFER_SIZE, respond, 20, 100)
+  printf("%s\n", respond);
 ```
 
 ### Server/Client
@@ -345,7 +315,6 @@ switch (network_client_connect(&network)){
 ```c
   if(network_check_if_empty_message(request) == NODATA){
     printf("Can't send empty message\n");
-    return;
   };
 ```
 
