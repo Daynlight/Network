@@ -22,7 +22,7 @@ int main() {
   // Init server
   switch (network_server_init(&network, UDP, PORT)){
     case ERRORCODE:
-      printf("Can't Initialize Server");
+      printf("Can't Initialize Server\n");
       network_server_destroy(&network);
       exit(EXIT_FAILURE);
       break;
