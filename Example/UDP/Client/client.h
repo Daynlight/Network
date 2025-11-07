@@ -5,6 +5,7 @@
 
 #include "network.h"
 #include "compression/compression.h"
+#include "platform.h"
 
 
 #include <signal.h>

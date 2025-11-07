@@ -33,7 +33,18 @@ int main() {
   };
 
   while (running) {
+    int client_socket = 0;
+    char request[BUFFER_SIZE] = {0};
 
+    // get request
+
+    // respond
+    if(client_socket){
+      // generate respond
+
+      // send respond
+      
+    };
 
     sleep(0.05);
   };

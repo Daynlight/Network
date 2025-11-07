@@ -33,18 +33,6 @@ int main(){
       break;
   };
 
-  // Connect to server
-  switch (network_client_connect(&network)){
-    case CONNECTERROR:
-      printf("Can't connect to network!\n");
-      network_client_destroy(&network);
-      printf("Network destroyed!\n");
-      exit(EXIT_FAILURE);
-      break;
-    default:
-      printf("Connected to server!\n");  
-  };
-
   // set noblocking
 #ifndef WIN32
   fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
@@ -53,7 +41,16 @@ int main(){
 
   printf("> ");
   while (running) {
+    char request[BUFFER_SIZE] = {0};
+    
+    // get request
+    if(client_noblocking_get_input(request)){
+      // get respond
 
+      // print respond
+
+      printf("\n>");
+    }
     sleep(0.05);
   };
 
