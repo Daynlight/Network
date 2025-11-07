@@ -150,7 +150,8 @@ int network_client_read(struct network_provider* network_provider, char* buffer,
 enum NetworkCodes network_client_send(struct network_provider* network_provider, char* buffer, const unsigned int max_message_size);
 int network_client_read_from(struct network_provider* network_provider, char* buffer, const unsigned int buffer_size);
 enum NetworkCodes network_client_send_to(struct network_provider* network_provider, char* buffer, const unsigned int max_message_size);
-int network_client_send_request();
+int network_client_send_request(struct network_provider* network_provider, char* request, const unsigned int max_message_size,
+                                char* respond, float refresh_rate, unsigned int max_tries);
 
 
 //////////////////////////////////////////////////////////////////

@@ -45,17 +45,16 @@ int main(){
     
     // get request
     if(client_noblocking_get_input(request)){
+      char respond[BUFFER_SIZE] = {0};
       // send request
-      if(network_client_send_to(&network, request, BUFFER_SIZE) == SUCCESS){
-        // get respond
-        char respond[BUFFER_SIZE] = {0};
-        while (network_client_read_from(&network, respond, BUFFER_SIZE) == NODATA) {
-          sleep(0.05);
-        };
-
-        // print respond
-        printf("respond: %s", respond);
-      };
+      switch(network_client_send_request(&network, request, BUFFER_SIZE, respond, 20, 100)){
+        case ERRORCODE:
+          printf("Can't get respond\n");
+          break;
+        default:
+          printf("%s", respond);
+          break;
+      }
       
       printf("\n> ");
     }

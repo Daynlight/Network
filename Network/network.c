@@ -193,6 +193,31 @@ enum NetworkCodes network_client_send_to(struct network_provider *network_provid
 
 
 
+int network_client_send_request(struct network_provider *network_provider, char *request, const unsigned int max_message_size, 
+                                char *respond, float refresh_rate, unsigned int max_tries) {
+  
+  enum NetworkCodes req_code = network_client_send_to(network_provider, request, max_message_size);
+  
+  if(req_code == SUCCESS){
+    int val = network_client_read_from(network_provider, respond, max_message_size);
+    
+    for(unsigned int i = 0; i < max_tries; i++) 
+      if(val == NODATA) {
+        val = network_client_read_from(network_provider, respond, max_message_size);
+        sleep(1/refresh_rate);
+      }
+      else
+        break;
+
+    return val;
+  };
+
+  return req_code;
+};
+
+
+
+
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Server /////////////////////////////
 //////////////////////////////////////////////////////////////////
