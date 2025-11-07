@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(UDPClient LANGUAGES C)
+project(UDP_Client LANGUAGES C)
 
 
-add_executable(UDPClient client.c)
-target_link_libraries(UDPClient Network)
+add_executable(UDP_Client client.c)
+target_link_libraries(UDP_Client Network)

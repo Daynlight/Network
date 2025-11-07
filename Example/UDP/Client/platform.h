@@ -1,7 +1,7 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-#include "../../Macro.h"
+#include "../Macro.h"
 
 #ifdef WIN32
 #include <windows.h>
