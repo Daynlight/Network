@@ -143,13 +143,13 @@ struct network_provider{
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_provider* network_provider, const char* addr, int port);
+enum NetworkCodes network_client_init(struct network_provider* network_provider, enum NetworkModes mode, const char* addr, int port);
 enum NetworkCodes network_client_destroy(struct network_provider* network_provider);
 enum NetworkCodes network_client_connect(struct network_provider* network_provider);
 int network_client_read(struct network_provider* network_provider, char* buffer, const unsigned int buffer_size);
 enum NetworkCodes network_client_send(struct network_provider* network_provider, char* buffer, const unsigned int max_message_size);
 int network_client_read_from(struct network_provider* network_provider, struct sockaddr_in *address, char* buffer, const unsigned int buffer_size);
-enum NetworkCodes network_client_send_to();
+enum NetworkCodes network_client_send_to(struct network_provider* network_provider, char* buffer, const unsigned int max_message_size);
 int network_client_send_request();
 
 

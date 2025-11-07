@@ -40,7 +40,7 @@ int main() {
     int val = network_server_read_from(&network, &client_socket, request, BUFFER_SIZE);
 
     // respond
-    if(val == SUCCESS){
+    if(val >= SUCCESS){
       // generate respond
       printf("user request: %s\n", request);
 

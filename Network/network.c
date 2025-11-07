@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_provider* network_provider, const char* addr, int port) {
+enum NetworkCodes network_client_init(struct network_provider* network_provider, enum NetworkModes mode, const char* addr, int port) {
 #ifdef WIN32
   WSADATA wsaData;
   int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -15,7 +15,12 @@ enum NetworkCodes network_client_init(struct network_provider* network_provider,
   
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_INET;
-  hints.ai_socktype = SOCK_STREAM;
+  if(mode == TCP)
+    hints.ai_socktype = SOCK_STREAM;
+  else 
+    hints.ai_socktype = SOCK_DGRAM;
+
+  network_provider->mode = mode;
 
   if (getaddrinfo(addr, NULL, &hints, &res) != 0){
     freeaddrinfo(res);
@@ -27,11 +32,6 @@ enum NetworkCodes network_client_init(struct network_provider* network_provider,
     freeaddrinfo(res);
     return SOCKETERROR;
   };
-
-  if(res->ai_socktype == SOCK_DGRAM)
-    network_provider->mode = 1;
-  else
-    network_provider->mode = 0;
 
   network_provider->serv_addr = *(struct sockaddr_in*)res->ai_addr;
   network_provider->serv_addr.sin_port = htons(port);
@@ -143,6 +143,30 @@ enum NetworkCodes network_client_send(struct network_provider *network_provider,
     
   return SUCCESS;
 }
+
+
+
+
+enum NetworkCodes network_client_send_to(struct network_provider *network_provider, char *buffer, const unsigned int max_message_size){
+  if (!network_provider || !buffer || strlen(buffer) == 0)
+    return NODATA;
+
+  struct sockaddr_in *dest = &network_provider->serv_addr;
+  socklen_t addr_len = sizeof(struct sockaddr_in);
+
+  int sent = 0;
+  if(strlen(buffer) > max_message_size)
+    sent = sendto(network_provider->sock, buffer, max_message_size, 0, (struct sockaddr*)dest, addr_len);
+  else
+    sent = sendto(network_provider->sock, buffer, strlen(buffer), 0, (struct sockaddr*)dest, addr_len);
+  
+
+  if (sent < 0) {
+    return ERRORCODE;
+  };
+
+  return SUCCESS;
+};
 
 
 

@@ -19,7 +19,7 @@ int main(){
   signal(SIGINT, sigint_handler);
   
   // Init Client
-  switch (network_client_init(&network, ADDR, PORT)){
+  switch (network_client_init(&network, UDP, ADDR, PORT)){
     case CONNECTERROR:
       printf("Can't init network\n");
       exit(EXIT_FAILURE);
@@ -45,10 +45,13 @@ int main(){
     
     // get request
     if(client_noblocking_get_input(request)){
-      // get respond
+      // send request
+      if(network_client_send_to(&network, request, BUFFER_SIZE) == SUCCESS){
+        // get respond
 
-      // print respond
-
+        // print respond
+      };
+      
       printf("\n>");
     }
     sleep(0.05);
