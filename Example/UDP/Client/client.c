@@ -19,7 +19,7 @@ int main(){
   signal(SIGINT, sigint_handler);
   
   // Init Client
-  switch (network_client_init(&network, TCP, ADDR, PORT)){
+  switch (network_client_init(&network, ADDR, PORT)){
     case CONNECTERROR:
       printf("Can't init network\n");
       exit(EXIT_FAILURE);
