@@ -46,8 +46,8 @@ It is simple internet interface for easier working with networking in c/c++. The
 ## Supported Platforms
 | Platform   | support |
 |:----------:|:-------:|
-| **Windows**| ✅ Yes  |
-| **Linux**  | ❌ Yes  |
+| **Linux**  | ✅ Yes  |
+| **Windows**| ❌ Yes  |
 | **Android**| ❌ No   |
 | **macOS**  | ❌ No   |
 | **iOS**    | ❌ No   |
