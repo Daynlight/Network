@@ -75,7 +75,7 @@ It is simple internet interface for easier working with networking in c/c++. The
 ```
 2. compile via cmake
 ```bash
-  # you need to change address in Example/Macro.h
+  # you need to change address in Example/Chat/Macro.h
   # in default it uses my google cloud server so many 
   # users can access it
 
