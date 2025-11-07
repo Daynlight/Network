@@ -200,18 +200,21 @@ void sigint_handler(int sig){
 #### network_server_read
 ```c
   char buffer[BUFFER_SIZE + NAMESIZE] = {0};
+  
   int valread = network_server_read(&clients.clientData[i].socket_id, buffer, BUFFER_SIZE + NAMESIZE);
 ```
 
 #### network_server_send
 ```c
   char message[NAMESIZE + BUFFER_SIZE] = "message";
+  
   network_server_send(&(clients->clientData[j].socket_id), message, BUFFER_SIZE + NAMESIZE);
 ```
 
 #### network_get_client_ip
 ```c
   char ip[INET_ADDRSTRLEN];
+  
   network_get_client_ip(&socket, ip);
 ```
 
@@ -226,6 +229,7 @@ void sigint_handler(int sig){
 #### network_server_send_to
 ```c
   char respond[BUFFER_SIZE] = "respond";
+  
   network_server_send_to(&network, &client_socket, respond, BUFFER_SIZE);
 ```
 
@@ -277,12 +281,14 @@ switch (network_client_connect(&network)){
 #### network_client_send
 ```c
   char send_request[NAMESIZE + BUFFER_SIZE] = "request";
+  
   network_client_send(network, send_request, NAMESIZE + BUFFER_SIZE);
 ```
 
 #### network_client_read_from
 ```c
   char respond[NAMESIZE + BUFFER_SIZE] = {0};
+  
   int val = network_client_read_from(network_provider, respond, NAMESIZE + BUFFER_SIZE);
     
   for(unsigned int i = 0; i < 100; i++) {
