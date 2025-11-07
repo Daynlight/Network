@@ -85,10 +85,19 @@ Library is written in c. Useful and lightweight. Core idea was assignment at uni
 
 - Best way to use it is making some custom format. for example make first **byte 255 or more** are always operations **register,login etc.** then you check this first byte and make operation based on this.
 
-- Good practice is to **optimize** buffer before sending it. Also good idea is **compression** and **encryption** [CCrypt](https://github.com/Daynlight/CCrypt).
+- Good practice is to **optimize** buffer before sending it, **SIGINT handling**. Also good idea is **compression** and **encryption** [CCrypt](https://github.com/Daynlight/CCrypt).
 
 - After client connect it sets his socket to **no-blocking**
 
+### SIGINT handling
+```c
+void sigint_handler(int sig){
+  network_client_destroy(&network);
+  printf("Network destroyed!\n");
+  running = 0;
+  exit(EXIT_FAILURE);
+};
+```
 
 ### Server
 #### Functions
@@ -155,15 +164,8 @@ Library is written in c. Useful and lightweight. Core idea was assignment at uni
 
 
 ## Full Example
-### Server
-```c
-
-```
-
-### Client
-```c
-
-```
+- [Chat Example](Example/Chat/)
+- [UDP Example](Example/UDP/)
 
 
 
@@ -173,9 +175,7 @@ Library is written in c. Useful and lightweight. Core idea was assignment at uni
 - **Non-blocking I/O**: No need to wait for data to be read or sent; the program can continue executing while awaiting network events.
 - **Multiple Client Handling**: The server can handle multiple client connections simultaneously.
 - **Protocols**: TCP and UDP protocol
-- **Cross-Platform**: Window and Linux supported.
-
-
+- **Cross-Platform**: Windows and Linux supported.
 
 
 
