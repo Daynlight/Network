@@ -129,12 +129,20 @@ enum NetworkCodes{
   SUCCESS = 0
 };
 
+///////////////////////////////////////////////////////////////////
+////////////////////////////// Modes //////////////////////////////
+///////////////////////////////////////////////////////////////////
+enum NetworkModes{
+  TCP = 0,
+  UDP = 1
+};
+
 
 
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_provider* network_provider, const char* addr, int port);
+enum NetworkCodes network_client_init(struct network_provider* network_provider, const unsigned int mode, const char* addr, int port);
 enum NetworkCodes network_client_destroy(struct network_provider* network_provider);
 enum NetworkCodes network_client_connect(struct network_provider* network_provider);
 int network_client_read(struct network_provider* network_provider, char* buffer, const unsigned int buffer_size);
@@ -145,7 +153,7 @@ enum NetworkCodes network_client_send(struct network_provider* network_provider,
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Server /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_server_init(struct network_provider* network_provider, const unsigned int port);
+enum NetworkCodes network_server_init(struct network_provider* network_provider, const unsigned int mode, const unsigned int port);
 enum NetworkCodes network_server_destroy(struct network_provider* network_provider);
 int network_server_listen(struct network_provider* network_provider);
 int network_server_read(int* socket, char *buffer, const unsigned int buffer_size);

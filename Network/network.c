@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Client /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_client_init(struct network_provider* network_provider, const char* addr, int port) {
+enum NetworkCodes network_client_init(struct network_provider* network_provider, const unsigned int mode, const char* addr, int port) {
 #ifdef WIN32
   WSADATA wsaData;
   int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -148,7 +148,7 @@ enum NetworkCodes network_client_send(struct network_provider *network_provider,
 //////////////////////////////////////////////////////////////////
 ///////////////////////////// Server /////////////////////////////
 //////////////////////////////////////////////////////////////////
-enum NetworkCodes network_server_init(struct network_provider *network_provider, const unsigned int port){
+enum NetworkCodes network_server_init(struct network_provider *network_provider, const unsigned int mode, const unsigned int port){
 #ifdef WIN32
   WSADATA wsaData;
   int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
