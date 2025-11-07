@@ -1,7 +1,6 @@
 # Network
 ## About 
-It is simple internet interface for easier working with networking in c/c++.
-Library is written in c. Useful and lightweight. Core idea was assignment at university with networking. All functions works on **no-blocking mode** Added simple chat.
+It is simple internet interface for easier working with networking in c/c++. The library is written in c. Useful and lightweight. Core idea was assignment at university with networking. All functions operate in **no-blocking mode**. Includes a simple chat example with a server, allowing many users to chat with each other.
 
 
 
@@ -34,6 +33,15 @@ Library is written in c. Useful and lightweight. Core idea was assignment at uni
 
 
 
+## Supported Platforms
+| Platform   | support |
+|:----------:|:-------:|
+| **Linux**  | ✅ Yes  |
+| **Windows**| ✅ Yes  |
+| **Android**| ❌ No   |
+| **MacOS**  | ❌ No   |
+| **IOS**    | ❌ No   |
+
 
 
 ## Installation
@@ -58,7 +66,7 @@ Library is written in c. Useful and lightweight. Core idea was assignment at uni
 2. compile via cmake
 ```bash
   # you need to change address in Example/Macro.h
-  # in default it uses my google cloud server soo many 
+  # in default it uses my google cloud server so many 
   # users can access it
 
   mkdir build
@@ -81,7 +89,7 @@ Library is written in c. Useful and lightweight. Core idea was assignment at uni
 ### Info and Recommend Usage
 - Server and Client works on **no-blocking sockets**. You need loop for receiving data.
 
-- For **Video/Music etc.** data are sended as **char buffer** and on client side are used in proper way.
+- For **Video/Music etc.** data are send as **char buffer** and on client side are used in proper way.
 
 - Best way to use it is making some custom format. for example make first **byte 255 or more** are always operations **register,login etc.** then you check this first byte and make operation based on this.
 
@@ -176,7 +184,7 @@ void sigint_handler(int sig){
 - **Multiple Client Handling**: The server can handle multiple client connections simultaneously.
 - **Protocols**: TCP and UDP protocol
 - **Cross-Platform**: Windows and Linux supported.
-
+- **Working Example**: Ran server in cloud. So many users can connect and chat with each other. 
 
 
 
