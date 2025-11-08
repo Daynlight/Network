@@ -35,9 +35,8 @@ int client_noblocking_get_input(char* request){
     int ch = _getch();
     if (ch == '\r' || ch == '\n') {
       request[strcspn(request, "\n")] = '\0';
-
-      printf("\n> ");
-      return 0;
+      printf("\n");
+      return 1;
     } 
     else if (ch == 8) { // backspace
       size_t len = strcspn(request, "\n");
@@ -53,9 +52,11 @@ int client_noblocking_get_input(char* request){
       if (len < BUFFER_SIZE - 1)
         request[len] = (char)ch, request[len + 1] = '\0';
       printf("%c", ch);
-      return 1;
+      return 0;
     };
   };
+
+  return 0;
 };
 
 #else
