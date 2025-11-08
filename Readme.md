@@ -68,7 +68,8 @@ It is simple internet interface for easier working with networking in c/c++. The
 ```cmake
   target_link_libraries(App Network)
 ```
-### Chat Example
+
+### Chat App
 1. clone repository
 ```bash
   git clone https://github.com/Daynlight/Network.git
