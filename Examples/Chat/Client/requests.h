@@ -28,7 +28,12 @@ How to use:
 void client_register(struct network_provider* network, char *name){
   // get name
   printf("name: ");
-  client_noblocking_get_input(name);
+  if (fgets(name, NAMESIZE, stdin) == NULL) {
+    fprintf(stderr, "Failed to read name.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  name[strlen(name) - 1] = '\0';
 
   // check for incorrect name
   if(strchr(name, '@') != NULL){

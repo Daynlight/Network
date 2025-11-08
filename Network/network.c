@@ -64,27 +64,7 @@ enum NetworkCodes network_client_destroy(struct network_provider* network_provid
 
 enum NetworkCodes network_client_connect(struct network_provider* network_provider) {
 #ifdef WIN32
-  if (connect(network_provider->sock, (struct sockaddr *)&network_provider->serv_addr, sizeof(network_provider->serv_addr)) < 0) {
-    int err = WSAGetLastError();
-    if (err != WSAEWOULDBLOCK && err != WSAEINPROGRESS) {
-      return CONNECTERROR;
-    };
- 
-    fd_set writefds;
-    FD_ZERO(&writefds);
-    FD_SET(network_provider->sock, &writefds);
-
-    struct timeval tv;
-    tv.tv_sec = 0.05f;
-    tv.tv_usec = 0.0f;
-
-    int sel = select(0, NULL, &writefds, NULL, &tv);
-    if (sel > 0 && FD_ISSET(network_provider->sock, &writefds)) {
-      return SUCCESS;
-    } else {
-      return CONNECTERROR;
-    }
-  } else {
+  if (connect(network_provider->sock, (struct sockaddr *)&network_provider->serv_addr, sizeof(network_provider->serv_addr)) >= 0) {
     u_long mode = 1;
     ioctlsocket(network_provider->sock, FIONBIO, &mode);
     return SUCCESS;
@@ -95,8 +75,8 @@ enum NetworkCodes network_client_connect(struct network_provider* network_provid
     fcntl(network_provider->sock, F_SETFL, flags | O_NONBLOCK);
     return SUCCESS;
   };
-  return CONNECTERROR;
 #endif
+  return CONNECTERROR;
 };
 
 
