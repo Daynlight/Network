@@ -59,15 +59,18 @@ int main(){
 #endif
 
 
+  char request[BUFFER_SIZE + NAMESIZE] = {0};
   printf("> ");
   while (running) {
-    char request[BUFFER_SIZE + NAMESIZE] = {0};
     char respond[BUFFER_SIZE + NAMESIZE] = {0};
 
     // requests
     if(client_noblocking_get_input(request))  // read input
+    {
       if(!client_commands(request, &running, name)) // client commands
         send_request(&network, request);      // send to server
+      memset(request, 0, BUFFER_SIZE + NAMESIZE);
+    }
 
     // operate responds
     switch (network_client_read(&network, respond, BUFFER_SIZE + NAMESIZE)){
