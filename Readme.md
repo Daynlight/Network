@@ -47,7 +47,7 @@ It is simple internet interface for easier working with networking in c/c++. The
 | Platform   | support |
 |:----------:|:-------:|
 | **Linux**  | ✅ Yes  |
-| **Windows**| ❌ No   |
+| **Windows**| ✅ Yes  |
 | **Android**| ❌ No   |
 | **macOS**  | ❌ No   |
 | **iOS**    | ❌ No   |
