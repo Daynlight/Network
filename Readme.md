@@ -48,8 +48,8 @@ It is simple internet interface for easier working with networking in c/c++. The
 |:----------:|:-------:|
 | **Linux**  | ✅ Yes  |
 | **Windows**| ✅ Yes  |
-| **Android**| ❌ No   |
 | **macOS**  | ❌ No   |
+| **Android**| ❌ No   |
 | **iOS**    | ❌ No   |
 
 
