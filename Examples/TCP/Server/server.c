@@ -58,11 +58,11 @@ int main() {
 
     // operate all clients
     for(int i = 0; i < clients.last_client; i++){
-      char message[BUFFER_SIZE + NAMESIZE] = {0};
+      char message[BUFFER_SIZE] = {0};
 
       if(clients.clientData[i].socket_id > 0){
         // get requests
-        int valread = network_server_read(&clients.clientData[i].socket_id, message, BUFFER_SIZE + NAMESIZE);
+        int valread = network_server_read(&clients.clientData[i].socket_id, message, BUFFER_SIZE);
       
         // send respond
         switch(valread){
@@ -77,7 +77,7 @@ int main() {
             // broadcast as respond
             for(int j = 0; j < clients.last_client; j++)
               if(i != j && clients.clientData[j].socket_id > 0)
-                network_server_send(&(clients.clientData[j].socket_id), message, BUFFER_SIZE + NAMESIZE);
+                network_server_send(&(clients.clientData[j].socket_id), message, BUFFER_SIZE);
             printf("message: %s\n", message);
           break;
         };

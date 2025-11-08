@@ -39,9 +39,9 @@ int main(){
 #endif
 
 
+  char request[BUFFER_SIZE] = {0};
   printf("> ");
   while (running) {
-    char request[BUFFER_SIZE] = {0};
     
 
     // get request
@@ -56,9 +56,10 @@ int main(){
         default:
           printf("%s", respond);
           break;
-      }
-      
+        }
+        
       printf("\n> ");
+      memset(request, 0, BUFFER_SIZE);
     }
 #ifdef WIN32
     Sleep(0.05);

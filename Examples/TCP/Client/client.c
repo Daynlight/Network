@@ -52,19 +52,20 @@ int main(){
 #endif
 
 
+  char request[BUFFER_SIZE] = {0};
   printf("> ");
   while (running) {
-    char request[BUFFER_SIZE + NAMESIZE] = {0};
-    char respond[BUFFER_SIZE + NAMESIZE] = {0};
+    char respond[BUFFER_SIZE] = {0};
 
     // send requests
     if(client_noblocking_get_input(request)){
-      network_client_send(&network, request, BUFFER_SIZE + NAMESIZE);
+      network_client_send(&network, request, BUFFER_SIZE);
       printf("> ");
+      memset(request, 0, BUFFER_SIZE);
     };
 
     // get responds
-    switch (network_client_read(&network, respond, BUFFER_SIZE + NAMESIZE)){
+    switch (network_client_read(&network, respond, BUFFER_SIZE)){
       case NODATA:
         break;
       case DISCONNECT:

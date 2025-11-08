@@ -8,7 +8,6 @@
 
 struct clientData{
   int socket_id;
-  char name[NAMESIZE];
 };
 
 
