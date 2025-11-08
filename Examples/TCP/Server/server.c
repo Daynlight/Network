@@ -84,7 +84,11 @@ int main() {
       };
     };
 
+#ifdef WIN32
+    Sleep(0.05);
+#else
     sleep(0.05);
+#endif
   };
 
   // clean up

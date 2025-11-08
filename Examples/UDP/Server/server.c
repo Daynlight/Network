@@ -1,7 +1,6 @@
 #include "server.h"
 
 
-
 struct network_provider network = {0};
 int running = 1;
 
@@ -51,8 +50,11 @@ int main() {
       // print request
       printf("user request: %s\n", request);
     };
-
+#ifdef WIN32
+    Sleep(0.05);
+#else
     sleep(0.05);
+#endif
   };
 
   // clean up

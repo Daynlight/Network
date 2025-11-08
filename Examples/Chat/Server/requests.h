@@ -5,6 +5,7 @@
 
 #include "network.h"
 #include "client_manger/client_manger.h"
+#include <stdio.h>
 
 
 void listen_for_connections(struct network_provider* network, struct clients* clients){

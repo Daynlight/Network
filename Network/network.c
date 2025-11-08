@@ -67,7 +67,7 @@ enum NetworkCodes network_client_connect(struct network_provider* network_provid
   if (connect(network_provider->sock, (struct sockaddr *)&network_provider->serv_addr, sizeof(network_provider->serv_addr)) < 0) {
     int err = WSAGetLastError();
     if (err != WSAEWOULDBLOCK && err != WSAEINPROGRESS) {
-      return ERRORCODE;
+      return CONNECTERROR;
     };
  
     fd_set writefds;
@@ -75,14 +75,14 @@ enum NetworkCodes network_client_connect(struct network_provider* network_provid
     FD_SET(network_provider->sock, &writefds);
 
     struct timeval tv;
-    tv.tv_sec = CONNECT_RETRY_DELAY;
-    tv.tv_usec = 0;
+    tv.tv_sec = 0.05f;
+    tv.tv_usec = 0.0f;
 
     int sel = select(0, NULL, &writefds, NULL, &tv);
     if (sel > 0 && FD_ISSET(network_provider->sock, &writefds)) {
       return SUCCESS;
     } else {
-      return ERRORCODE;
+      return CONNECTERROR;
     }
   } else {
     u_long mode = 1;
@@ -203,7 +203,11 @@ int network_client_send_request(struct network_provider *network_provider, char 
     
     for(unsigned int i = 0; i < max_tries; i++) 
       if(val == NODATA) {
+#ifdef WIN32
+        Sleep(1/refresh_rate);
+#else
         sleep(1/refresh_rate);
+#endif
         val = network_client_read_from(network_provider, respond, max_message_size);
       }
       else
@@ -256,8 +260,8 @@ enum NetworkCodes network_server_init(struct network_provider *network_provider,
     return ERRORCODE;
 
 #ifdef WIN32
-  u_long mode = 1;
-  ioctlsocket(network_provider->sock, FIONBIO, &mode);
+  u_long mode_sock = 1;
+  ioctlsocket(network_provider->sock, FIONBIO, &mode_sock);
 #else
   int flags = fcntl(network_provider->sock, F_GETFL, 0);
   fcntl(network_provider->sock, F_SETFL, flags | O_NONBLOCK);
@@ -313,7 +317,7 @@ int network_server_listen(struct network_provider *network_provider) {
 
 int network_server_read(int* socket, char *buffer, const unsigned int buffer_size){
 #ifdef WIN32
-  int val = recv(socket, buffer, buffer_size, 0);
+  int val = recv(*socket, buffer, buffer_size, 0);
   if(val == SOCKET_ERROR){
     int err = WSAGetLastError();
     if(err == WSAEWOULDBLOCK)

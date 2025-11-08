@@ -30,41 +30,30 @@ void set_stdin_nonblocking(void) {
 
 
 
-void client_noblocking_get_input(){
+int client_noblocking_get_input(char* request){
   if (_kbhit()) {
     int ch = _getch();
     if (ch == '\r' || ch == '\n') {
-      send_buffer[strlen(send_buffer)] = '\0';
-      if (strcmp(send_buffer, "exit") == 0) {
-        running = 0;
-        return;
-      };
-
-      char buffer[BUFFER_SIZE] = {0};
-      strcat(buffer, name);
-      strcat(buffer, send_buffer);
-
-      if(send_buffer == NULL || strlen(send_buffer) == 0 || send_buffer[0] == '\0')
-        printf("Can't send empty message\n");
-      else
-        network_client_send(&network, buffer, strlen(buffer));
+      request[strcspn(request, "\n")] = '\0';
 
       printf("\n> ");
-      memset(send_buffer, 0, BUFFER_SIZE);
+      return 1;
     } 
     else if (ch == 8) { // backspace
-      size_t len = strlen(send_buffer);
+      size_t len = strcspn(request, "\n");
       if (len > 0) {
-        send_buffer[len - 1] = '\0';
+        request[len - 1] = '\0';
         printf("\b \b");
         fflush(stdout);
+        return 0;
       };
     } 
     else {
-      size_t len = strlen(send_buffer);
+      size_t len = strcspn(request, "\n");
       if (len < BUFFER_SIZE - 1)
-        send_buffer[len] = (char)ch, send_buffer[len + 1] = '\0';
+        request[len] = (char)ch, request[len + 1] = '\0';
       printf("%c", ch);
+      return 0;
     };
   };
 };

@@ -11,7 +11,7 @@ void destroy_clients(struct clients *clients){
   for(int i = 0; i < clients->max_clients; i++)
     if(clients->clientData[i].socket_id != -1)
 #ifdef WIN32
-      closesocket(clients->client_sock[i]);
+      closesocket(clients->clientData[i].socket_id);
 #else
       close(clients->clientData[i].socket_id);
 #endif
@@ -50,7 +50,7 @@ void add_client(struct clients *clients, int socket){
 void delete_client(struct clients *clients, int index){
   // close socket
 #ifdef WIN32
-  closesocket(clients->client_sock[index]);
+  closesocket(clients->clientData[index].socket_id);
 #else
   close(clients->clientData[index].socket_id);
 #endif
