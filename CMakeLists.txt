@@ -16,3 +16,5 @@ add_subdirectory(Examples/UDP/Client)
 
 add_subdirectory(Examples/TCP/Server)
 add_subdirectory(Examples/TCP/Client)
+
+add_subdirectory(Examples/Web/Server)
