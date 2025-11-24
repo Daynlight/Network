@@ -9,6 +9,7 @@ int running = 1;
 
 int total = 0;
 char last_path[255] = {0};
+int max_client_size = 0;
 
 void sigint_handler(int sig) {
   destroy_clients(&clients);
@@ -96,6 +97,15 @@ int main() {
         strcat(end_message, "</p>");
         if(total % 2 == 0)
           strcpy(last_path, path);
+
+        strcat(end_message, "<p>Unique clients: ");
+        char max_client_str[16];
+        sprintf(max_client_str, "%d", max_client_size);
+        strcat(end_message, max_client_str);
+        strcat(end_message, "</p>");
+        if(max_client_size < clients.last_client)
+          max_client_size = clients.last_client;
+
 
         // respond to request
         switch(valread){
