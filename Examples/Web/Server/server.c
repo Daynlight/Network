@@ -85,7 +85,7 @@ int main() {
         
         strcat(end_message, "<h1>My HTTP server statistics</h1> <p>Total requests: ");
         char total_str[16];
-        sprintf(total_str, "%d", total);
+        sprintf(total_str, "%d", total / 2);
         strcat(end_message, total_str);
         strcat(end_message, "</p>");
 
