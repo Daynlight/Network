@@ -5,8 +5,10 @@
 struct network_provider network = {0};
 struct clients clients = {0};
 int running = 1;
-int total = 0;
 
+
+int total = 0;
+char last_path[255] = {0};
 
 void sigint_handler(int sig) {
   destroy_clients(&clients);
@@ -88,6 +90,12 @@ int main() {
         sprintf(total_str, "%d", total / 2);
         strcat(end_message, total_str);
         strcat(end_message, "</p>");
+
+        strcat(end_message, "<p>Last requested file: ");
+        strcat(end_message, last_path);
+        strcat(end_message, "</p>");
+        if(total % 2 == 0)
+          strcpy(last_path, path);
 
         // respond to request
         switch(valread){
