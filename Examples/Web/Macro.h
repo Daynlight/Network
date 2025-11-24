@@ -9,4 +9,15 @@
 #define NAMESIZE 25
 
 
+
+#define print_and_log(fmt, ...) do { \
+    printf(fmt, ##__VA_ARGS__); \
+    fflush(stdout); \
+    FILE *log = fopen("server.log", "a"); \
+    if (log) { \
+        fprintf(log, fmt, ##__VA_ARGS__); \
+        fclose(log); \
+    } \
+} while(0)
+
 #endif

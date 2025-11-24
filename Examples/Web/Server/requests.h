@@ -12,7 +12,7 @@ void listen_for_connections(struct network_provider* network, struct clients* cl
   int socket = network_server_listen(network); 
   switch (socket){
     case ERRORCODE:
-    printf("Cant connect client!\n");
+    print_and_log("Cant connect client!\n");
     break;
   case NOCLIENT:
     break;
@@ -20,7 +20,7 @@ void listen_for_connections(struct network_provider* network, struct clients* cl
     char ip[INET_ADDRSTRLEN];
     network_get_client_ip(&socket, ip);
     add_client(clients, socket);
-    printf("Client connected ip: %s\n", ip);
+    print_and_log("Client connected ip: %s\n", ip);
     break;
   };
 };
@@ -32,13 +32,13 @@ void register_user(char *decompressed_message, struct clients* clients, int i){
 
   // check for incorrect name
   if(strchr(name, '@') != NULL){
-    printf("invalid username: %s\n", name);
+    print_and_log("invalid username: %s\n", name);
     delete_client(clients, i);
     return;
   };
 
   if(strchr(name, '/') != NULL){
-    printf("invalid username: %s\n", name);
+    print_and_log("invalid username: %s\n", name);
     delete_client(clients, i);
     return;
   };
@@ -46,7 +46,7 @@ void register_user(char *decompressed_message, struct clients* clients, int i){
   // check if user already logged
   for(int j = 0; j < clients->last_client; j++)
     if(strcmp(clients->clientData[j].name, name) == 0){
-      printf("username already exists: %s\n", name);
+      print_and_log("username already exists: %s\n", name);
       delete_client(clients, i);
       return;
     };
@@ -55,7 +55,7 @@ void register_user(char *decompressed_message, struct clients* clients, int i){
   strcpy(clients->clientData[i].name, name);
 
   // print on server
-  printf("user %s registered\n", clients->clientData[i].name);
+  print_and_log("user %s registered\n", clients->clientData[i].name);
 };
 
 
@@ -71,7 +71,7 @@ void disconnect_user(struct clients *clients, int i){
   delete_client(clients, i);
 
   // print on server
-  printf("%s\n", message);
+  print_and_log("%s\n", message);
 };
 
 void respond(char *message, struct clients *clients, int i){
@@ -79,6 +79,14 @@ void respond(char *message, struct clients *clients, int i){
   strcat(send, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n");
   strcat(send, message);
   network_server_send(&clients->clientData[i].socket_id, send, NAMESIZE + BUFFER_SIZE);
+};
+
+void get_path(char *message, char *path){
+  unsigned int s = 4;
+  while (message[s] != EOF && message[s] != ' '){
+    path[s - 4] = message[s];
+    s++;
+  };
 };
 
 #endif

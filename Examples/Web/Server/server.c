@@ -5,13 +5,14 @@
 struct network_provider network = {0};
 struct clients clients = {0};
 int running = 1;
+int total = 0;
 
 
 void sigint_handler(int sig) {
   destroy_clients(&clients);
   network_server_destroy(&network);
-  printf("Clients destroyed!\n");
-  printf("Server destroyed!\n");
+  print_and_log("Clients destroyed!\n");
+  print_and_log("Server destroyed!\n");
   running = 0;
   exit(EXIT_FAILURE);
 };
@@ -20,18 +21,19 @@ void sigint_handler(int sig) {
 int main() {
   // SIGINT callback
   signal(SIGINT, sigint_handler);
+  
 
   // Init server
   switch (network_server_init(&network, TCP, PORT)){
     case ERRORCODE:
-      printf("Can't Initialize Server\n");
+      print_and_log("Can't Initialize Server\n");
       network_server_destroy(&network);
       perror("error");
       exit(EXIT_FAILURE);
       break;
     default: 
-      printf("Server Initialized\n");
-      printf("Server is running\n");
+      print_and_log("Server Initialized\n");
+      print_and_log("Server is running\n");
       break;
   };
 
@@ -72,7 +74,21 @@ int main() {
         int valread = network_server_read(&clients.clientData[i].socket_id, buffer, BUFFER_SIZE + NAMESIZE);
       
         buffer[strlen(buffer)] = '\0';
-        printf("%s", buffer);
+        print_and_log("%s\n", buffer);
+
+        char path[255] = {0};
+        get_path(buffer, path);
+
+        print_and_log("%s\n", path);
+
+        strcat(end_message, path);
+        
+        strcat(end_message, "<h1>My HTTP server statistics</h1> <p>Total requests: ");
+        char total_str[16];
+        sprintf(total_str, "%d", total);
+        strcat(end_message, total_str);
+        strcat(end_message, "</p>");
+
         // respond to request
         switch(valread){
           case DISCONNECT:
@@ -83,6 +99,7 @@ int main() {
           default:
             respond(end_message, &clients, i);
             disconnect_user(&clients, i);
+            total++;
           break;
         };
 
@@ -99,8 +116,8 @@ int main() {
   // clean up
   destroy_clients(&clients);
   network_server_destroy(&network);
-  printf("Clients destroyed!\n");
-  printf("Server destroyed!\n");
+  print_and_log("Clients destroyed!\n");
+  print_and_log("Server destroyed!\n");
 
   return 0;
 };
